@@ -6,7 +6,10 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(janitor)
+library(ggplot2)
 ```
 
 ### Milestone4
@@ -15,3 +18,28 @@ My plan for my project was to webscrape it, but even after watching webscraper.i
 If I had gotten the webscraper to work, I would load the data in as a csv file and clean it using clean_names() and the janitor package. I would then explore it a bit using View(), glimpse(), and summary(). I was hoping to create a visual that showed the Philadelphia Flyers season vs points, so I would have filtered for the flyers then used ggplot and geom line or geom scatter perhaps. I'm curious to see how the team has improved or not improved throughout the years.    
 
 I discussed the issues I've had and my current plan with Preceptor and he says that submitting what I have is fine. 
+
+
+### Milestone 5
+
+I didn't get my player data to load yet, I'm still working on that. I think it is because there are 40,000 data entries that webscraper must scan. I was able to laod in the team data, which is only about 1,000 entries. I made my plot, which I described in Milestone 4, using this team data.
+```{r, read Data}
+teams <- read_csv("nhl_teams.csv") %>% 
+  clean_names() %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+```
+
+
+```{r}
+teams %>% 
+  filter(team == "Philadelphia Flyers", points != is.na(points), season!= "2019-20") %>%
+  ggplot(aes(x = season, y = points)) +
+  geom_col(fill = "chocolate1") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Philadelphia Flyers Points", subtitle = "1967-2018 Seasons") +
+  xlab("Season") +
+  ylab("Points") +
+  theme(legend.position = "none", legend.title = element_blank())
+```
+
