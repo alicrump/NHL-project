@@ -22,11 +22,22 @@ I discussed the issues I've had and my current plan with Preceptor and he says t
 
 ### Milestone 5
 
-I didn't get my player data to load yet, I'm still working on that. I think it is because there are 40,000 data entries that webscraper must scan. I was able to laod in the team data, which is only about 1,000 entries. I made my plot, which I described in Milestone 4, using this team data.
+I successfully loaded the NHL team data and loaded half of the NHL player data. I think webscraper quits while extracting the player data because there are nearly 40,000 data entries and 800 total pages that webscraper must scan. I made my plot, which I described in Milestone 4, using the team data.  
+
 ```{r, read Data}
-teams <- read_csv("nhl_teams.csv") %>% 
+# Load team data
+teams <- read_csv("raw-data/nhl_teams.csv") %>% 
   clean_names() %>% 
   select(-web_scraper_order, -web_scraper_start_url)
+# Load data from 1917-1918 to 1942-1943 seasons
+first <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>% 
+  clean_names() %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+# Load data from 1943-1944 to 1968-1969 seasons
+second <- read_csv("raw-data/fortythree_to_sixtyeight.csv") %>% 
+  clean_names() %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
 ```
 
 
@@ -40,6 +51,8 @@ teams %>%
   labs(title = "Philadelphia Flyers Points", subtitle = "1967-2018 Seasons") +
   xlab("Season") +
   ylab("Points") +
-  theme(legend.position = "none", legend.title = element_blank())
+  theme(legend.position = "none", legend.title = element_blank()) #+
+  #theme(plot.title = element_text(hjust = 0.5)) +
+  #theme(plot.subtitle = element_text(hjust = 0.5))
 ```
 
