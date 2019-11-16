@@ -24,19 +24,73 @@ I discussed the issues I've had and my current plan with Preceptor and he says t
 
 I successfully loaded the NHL team data and loaded half of the NHL player data. I think webscraper quits while extracting the player data because there are nearly 40,000 data entries and 800 total pages that webscraper must scan. I made my plot, which I described in Milestone 4, using the team data.  
 
-```{r, read Data}
+```{r, read data}
 # Load team data
+
 teams <- read_csv("raw-data/nhl_teams.csv") %>% 
   clean_names() %>% 
   select(-web_scraper_order, -web_scraper_start_url)
+
 # Load data from 1917-1918 to 1942-1943 seasons
-first <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>% 
+
+one <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>% 
   clean_names() %>% 
+  na_if("--") %>% 
   select(-web_scraper_order, -web_scraper_start_url)
+
 # Load data from 1943-1944 to 1968-1969 seasons
-second <- read_csv("raw-data/fortythree_to_sixtyeight.csv") %>% 
+
+two <- read_csv("raw-data/fortythree_sixtyeight.csv") %>% 
   clean_names() %>% 
+  na_if("--") %>% 
   select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1969-1970 to 1982-1983 seasons
+
+three <- read_csv("raw-data/sixtynine_eightytwo.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1983-1984 to 1990-1991 seasons
+
+four <- read_csv("raw-data/eightythree_ninety.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1991-1992 to 1997-1998 seasons
+
+five <- read_csv("raw-data/ninetyone_ninetyseven.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1998-1999 to 2005-2006 seasons
+
+six <- read_csv("raw-data/ninetyeight_ohfive.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 2006-2007 to 2012-2013 seasons
+
+seven <- read_csv("raw-data/ohsix_twelve.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 2013-2014 to 2019 seasons
+
+eight <- read_csv("raw-data/thirteen_nineteen.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Join all the data frames into one
+
+binded_players <- rbind(eight,seven,six,five,four,three,two,one)
+
 
 ```
 
@@ -51,8 +105,6 @@ teams %>%
   labs(title = "Philadelphia Flyers Points", subtitle = "1967-2018 Seasons") +
   xlab("Season") +
   ylab("Points") +
-  theme(legend.position = "none", legend.title = element_blank()) #+
-  #theme(plot.title = element_text(hjust = 0.5)) +
-  #theme(plot.subtitle = element_text(hjust = 0.5))
+  theme(legend.position = "none", legend.title = element_blank())
 ```
 
