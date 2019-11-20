@@ -29,6 +29,7 @@ I successfully loaded the NHL team data and loaded half of the NHL player data. 
 
 teams <- read_csv("raw-data/nhl_teams.csv") %>% 
   clean_names() %>% 
+  na_if("--") %>% 
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 1917-1918 to 1942-1943 seasons
@@ -89,13 +90,17 @@ eight <- read_csv("raw-data/thirteen_nineteen.csv") %>%
 
 # Join all the data frames into one
 
-binded_players <- rbind(eight,seven,six,five,four,three,two,one)
+players <- rbind(eight,seven,six,five,four,three,two,one) %>% 
+  distinct(name, season, team, goals, .keep_all = TRUE)
 
 
 ```
 
 
 ```{r}
+# Create a graphic using Philadelphia Flyers team data. Remove the current
+# season statistics and plot the Flyers' team points over the past 50 years.
+
 teams %>% 
   filter(team == "Philadelphia Flyers", points != is.na(points), season!= "2019-20") %>%
   ggplot(aes(x = season, y = points)) +
