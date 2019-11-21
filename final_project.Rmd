@@ -24,14 +24,21 @@ I discussed the issues I've had and my current plan with Preceptor and he says t
 
 I successfully loaded the NHL team data and loaded half of the NHL player data. I think webscraper quits while extracting the player data because there are nearly 40,000 data entries and 800 total pages that webscraper must scan. I made my plot, which I described in Milestone 4, using the team data.  
 
-```{r, read data}
+```{r, read team data}
 # Load team data
 
 teams <- read_csv("raw-data/nhl_teams.csv") %>% 
   clean_names() %>% 
   na_if("--") %>% 
-  select(-web_scraper_order, -web_scraper_start_url)
+  select(-web_scraper_order, -web_scraper_start_url) %>% 
+  separate(season, c("start","end"), sep = "-") %>% 
+  mutate(start = as.numeric(start), end = as.numeric(end)) %>% 
+  mutate(end = ifelse(start<=2000, end + 1900, end + 2000)) %>% 
+  mutate(end = ifelse(start == 1999, 2000, end))
+```
 
+
+```{r, read player data}
 # Load data from 1917-1918 to 1942-1943 seasons
 
 one <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>% 
@@ -92,11 +99,21 @@ eight <- read_csv("raw-data/thirteen_nineteen.csv") %>%
 
 players <- rbind(eight,seven,six,five,four,three,two,one) %>% 
   distinct(name, season, team, goals, .keep_all = TRUE)
+```
+
+
+```{r, move data}
+# I'm moving my player and team data to the shiny app folder so that shiny can "see" it.
+
+write_rds(teams, "nhl/teams.rds")
+write_rds(players, "nhl/players.rds")
 
 
 ```
 
 
+
+### Milestone 4
 ```{r}
 # Create a graphic using Philadelphia Flyers team data. Remove the current
 # season statistics and plot the Flyers' team points over the past 50 years.
@@ -111,5 +128,23 @@ teams %>%
   xlab("Season") +
   ylab("Points") +
   theme(legend.position = "none", legend.title = element_blank())
+```
+
+```{r}
+teams %>% 
+  filter(team == "Philadelphia Flyers", points != is.na(points), season!= "2019-20") %>%
+  ggplot(aes(x = season, y = goals_for)) +
+  geom_col(fill = "chocolate1") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Philadelphia Flyers Goals", subtitle = "1967-2018 Seasons") +
+  xlab("Season") +
+  ylab("Goals") +
+  theme(legend.position = "none", legend.title = element_blank())
+```
+
+```{r}
+flyers <- teams %>% 
+  filter(team == "Philadelphia Flyers")
 ```
 
