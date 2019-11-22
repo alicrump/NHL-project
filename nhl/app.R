@@ -95,39 +95,39 @@ ui <- dashboardPage(skin = 'black',
                               ),
           tabItem(tabName = "players",
                   h1("Player Data"),
-                  selectInput("team",
+                  selectInput("team1",
                               "Select Current NHL Team:",
-                              choices = c("Anaheim Ducks",
-                                          "Arizona Coyotes",
-                                          "Boston Bruins",
-                                          "Buffalo Sabres",
-                                          "Carolina Hurricanes",
-                                          "Columbus Blue Jackets",
-                                          "Calgary Flames",
-                                          "Chicago Blackhawks",
-                                          "Colorado Avalanche",
-                                          "Dallas Stars",
-                                          "Detroit Red Wings",
-                                          "Edmonton Oilers",
-                                          "Florida Panthers",
-                                          "Los Angelos Kings",
-                                          "Minnesota Wild",
-                                          "Montreal Canadiens",
-                                          "New Jersey Devils",
-                                          "Nashville Predators",
-                                          "New York Islanders",
-                                          "New York Rangers",
-                                          "Ottawa Senators",
-                                          "Philadelphia Flyers",
-                                          "Pittsburgh Penguins",
-                                          "San Jose Sharks",
-                                          "St. Louis Blues",
-                                          "Tampa Bay Lightening",
-                                          "Toronto Maple Leafs",
-                                          "Vancouver Canucks",
-                                          "Vegas Golden Knights",
-                                          "Winnipeg Jets",
-                                          "Washington Capitals")),
+                              choices = c("Anaheim Ducks" = "ANA",
+                                          "Arizona Coyotes" = "ARI",
+                                          "Boston Bruins" = "BOS",
+                                          "Buffalo Sabres" = "BUF",
+                                          "Carolina Hurricanes" = "CAR",
+                                          "Columbus Blue Jackets" = "CBJ",
+                                          "Calgary Flames" = "CGY",
+                                          "Chicago Blackhawks" = "CHI",
+                                          "Colorado Avalanche" = "COL",
+                                          "Dallas Stars" = "DAL",
+                                          "Detroit Red Wings" = "DET",
+                                          "Edmonton Oilers" = "EDM",
+                                          "Florida Panthers" = "FLA",
+                                          "Los Angelos Kings" = "LAK",
+                                          "Minnesota Wild" = "MIN",
+                                          "Montreal Canadiens" = "MTL",
+                                          "New Jersey Devils" = "NJD",
+                                          "Nashville Predators" = "NSH",
+                                          "New York Islanders" = "NYI",
+                                          "New York Rangers" = "NYR",
+                                          "Ottawa Senators" = "OTT",
+                                          "Philadelphia Flyers" = "PHI",
+                                          "Pittsburgh Penguins" = "PIT",
+                                          "San Jose Sharks" = "SJS",
+                                          "St. Louis Blues" = "STL",
+                                          "Tampa Bay Lightening" = "TBL",
+                                          "Toronto Maple Leafs" = "TOR",
+                                          "Vancouver Canucks" = "VAN",
+                                          "Vegas Golden Knights" = "VGK",
+                                          "Winnipeg Jets" = "WPG",
+                                          "Washington Capitals" = "WSH")),
           selectInput("team",
                             "Select Past NHL Team:",
                             choices = c("Toronto Arenas",
@@ -156,19 +156,31 @@ ui <- dashboardPage(skin = 'black',
                                         "Quebec Nordiques",
                                         "Winnipeg Jets (1979)",
                                         "Phoenix Coyotes",
-                                        "Atlanta Thrashers")
-                                        
+                                        "Atlanta Thrashers")),
+                      selectInput("z",
+                                  "Statistic:",
+                                  choices = c("Goals" = "goals",
+                                              "Assists" = "assists",
+                                              "Points" = "points",
+                                              "Plus-Minus" = "plus_minus",
+                                              "Penalty Minutes" = "pim",
+                                              "Points per Game Played" = "points_per_gp",
+                                              "Power Play Goals" = "ppg",
+                                              "Shorthanded Goals" = "shg",
+                                              "Shorthanded Points" = "shp",
+                                              "Game Winning Goals" = "gwg",
+                                              "Overtime Goals" = "otg",
+                                              "Shots" = "shots",
+                                              "Shot %" = "shot_perc",
+                                              "Time on Ice per Game Played" = "toi_gp",
+                                              "Shifts per Game Played" = "shifts_gp",
+                                              "Faceoff Win %" = "fow_perc"
+                                              )),
+                                        plotOutput("PlayerPlot")
                   )
         )
       )
-                      ))
-                          #               imageOutput("teams")),
-                          # mainPanel(
-                          #   plotOutput("plot1")
-                          # )),
-                          # tabPanel("Players", 
-                          #           fluidPage(
-                          #               imageOutput("players"))))
+                      )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -180,6 +192,14 @@ server <- function(input, output) {
       arrange(desc(sum)) %>% 
       mutate(team = fct_reorder(team,sum))
   })
+  playerreact <- reactive({
+    players %>%
+      filter(team == input$team1) %>%
+      group_by(name) %>% 
+      summarize(total = sum(!! rlang:: sym(input$z))) %>%
+      arrange(desc(total)) %>% 
+      slice(1:20)
+  })
   
     output$TeamPlot <- renderPlot({
         teamreact() %>% 
@@ -189,6 +209,16 @@ server <- function(input, output) {
         xlab("Team") +
         ylab("Statistic")
     })
+    
+    output$PlayerPlot <- renderPlot({
+      playerreact() %>%
+        ggplot(aes(x = name, y = total)) +
+        geom_col() +
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+        xlab("Player") +
+        ylab("Statistic")
+    })
+    
 }
 
 # Run the application 

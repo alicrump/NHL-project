@@ -27,7 +27,26 @@ I successfully loaded the NHL team data and loaded half of the NHL player data. 
 ```{r, read team data}
 # Load team data
 
-teams <- read_csv("raw-data/nhl_teams.csv") %>% 
+teams <- read_csv("raw-data/nhl_teams.csv", col_types = cols(
+  team = col_character(),
+  season = col_character(),
+  games_played = col_double(),
+  wins = col_double(),
+  losses = col_double(),
+  ties = col_double(),
+  overtime = col_double(),
+  points = col_double(),
+  row = col_double(),
+  p_perc = col_double(),
+  goals_for = col_double(),
+  goals_against = col_double(),
+  goalsf_per_gp = col_double(),
+  goalsa_per_gp = col_double(),
+  powerplay_perc = col_double(),
+  penalty_kill_perc = col_double(),
+  shots_per_gp = col_double(),
+  shots_against_per_gp = col_double(),
+  fow_perc = col_double())) %>% 
   clean_names() %>% 
   na_if("--") %>% 
   select(-web_scraper_order, -web_scraper_start_url) %>% 
@@ -94,11 +113,26 @@ eight <- read_csv("raw-data/thirteen_nineteen.csv") %>%
   clean_names() %>% 
   na_if("--") %>% 
   select(-web_scraper_order, -web_scraper_start_url)
+```
 
+
+```{r, read player data}
 # Join all the data frames into one
 
 players <- rbind(eight,seven,six,five,four,three,two,one) %>% 
-  distinct(name, season, team, goals, .keep_all = TRUE)
+  distinct(name, season, team, goals, .keep_all = TRUE) %>% 
+  separate(season, c("start","end"), sep = "-") %>% 
+  mutate(start = as.numeric(start), end = as.numeric(end)) %>% 
+  mutate(end = ifelse(start<=2000, end + 1900, end + 2000)) %>% 
+  mutate(end = ifelse(start == 1999, 2000, end)) %>% 
+  
+  # Make all my data types doubles (or their appropriate type)
+  
+  mutate(points_per_gp = as.double(points_per_gp),
+         shot_perc = as.double(shot_perc),
+         shifts_gp = as.double(shifts_gp),
+         fow_perc = as.double(fow_perc)
+         )
 ```
 
 
@@ -115,12 +149,14 @@ write_rds(players, "nhl/players.rds")
 
 ### Milestone 4
 ```{r}
+# I created this graphic before I needed to change my season variable so the
+# x axis is not quite right
 # Create a graphic using Philadelphia Flyers team data. Remove the current
 # season statistics and plot the Flyers' team points over the past 50 years.
 
 teams %>% 
-  filter(team == "Philadelphia Flyers", points != is.na(points), season!= "2019-20") %>%
-  ggplot(aes(x = season, y = points)) +
+  filter(team == "Philadelphia Flyers", points != is.na(points), start != 2019) %>%
+  ggplot(aes(x = start, y = points)) +
   geom_col(fill = "chocolate1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -131,9 +167,12 @@ teams %>%
 ```
 
 ```{r}
+# I created this graphic before I needed to change my season variable so the
+# x axis is not quite right
+
 teams %>% 
-  filter(team == "Philadelphia Flyers", points != is.na(points), season!= "2019-20") %>%
-  ggplot(aes(x = season, y = goals_for)) +
+  filter(team == "Philadelphia Flyers", points != is.na(points), start != 2019) %>%
+  ggplot(aes(x = start, y = goals_for)) +
   geom_col(fill = "chocolate1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
