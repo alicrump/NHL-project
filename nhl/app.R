@@ -7,6 +7,8 @@
 #    http://shiny.rstudio.com/
 #
 
+# Load in my libraries
+
 library(shiny)
 library(plotly)
 library(dplyr)
@@ -17,12 +19,22 @@ library(tidyverse)
 library(shinydashboard)
 library(forcats)
 
+# Load in the cleaned data into Shiny
+
 teams <- read_rds("teams.rds")
 players <- read_rds("players.rds")
 
-# Define UI for application that draws a histogram
+# Define UI for application
+# Use a black theme because that is the NHL's color in their logo
+
 ui <- dashboardPage(skin = 'black',
+                    
+      # Add the title of my application
+      
       dashboardHeader(title = "NHL Statistics"),
+      
+      # Create the sidebar navigation
+      
       dashboardSidebar(
         sidebarMenu(
           menuItem("Home", tabName = "home"),
@@ -32,6 +44,9 @@ ui <- dashboardPage(skin = 'black',
       ),
       dashboardBody(
         tabItems(
+          
+          # Creating the About page in my dashboard
+          
           tabItem(tabName = "home",
                   h1("About the project"),
                   p("The National Hockey League (NHL) recently published the complete
@@ -74,8 +89,14 @@ ui <- dashboardPage(skin = 'black',
                     perhaps see how their goals, power plays, save percentage, and more have
                     had an effect (if any) on their record and standings over the years.")
           ),
+          
+          # Create the team data page
+          
           tabItem(tabName = "teams",
                   h1("Team Data"),
+                  
+          # Add a drop down bar for which statistic the user wants to view
+          
                   selectInput("y",
                               "Statistic:",
                               choices = c("Goals For" = "goals_for",
@@ -85,16 +106,34 @@ ui <- dashboardPage(skin = 'black',
                                           "Shots Against" = "shots_against_per_gp",
                                           "Powerplay %" = "powerplay_perc",
                                           "Penalty Kill %" = "penalty_kill")),
+            
+          # Add a slider that allows the user to select a season start and end
+          # Right now the years have commas in them -- still trying to figure
+          # out how to fix that.
+          
                   sliderInput("season", 
                               "Season(s)",
                               min = 1917,
                               max = 2019,
                               value = c(1917,2019)
                               ),
+          
+          # Plot my graph of the statistic vs. team
+          
                   plotOutput("TeamPlot")
                               ),
+          
+          # Create player data page
+          
           tabItem(tabName = "players",
                   h1("Player Data"),
+            
+          # Allow user to select a team to view player stats for
+          # In my final project I might allow the user to view more than
+          # one team at once. I also want the user to be able to select
+          # either a current NHL team or a past NHL team, but couldn't 
+          # figure out how to get them both working simultaneously yet.
+                  
                   selectInput("team1",
                               "Select Current NHL Team:",
                               choices = c("Anaheim Ducks" = "ANA",
@@ -128,7 +167,7 @@ ui <- dashboardPage(skin = 'black',
                                           "Vegas Golden Knights" = "VGK",
                                           "Winnipeg Jets" = "WPG",
                                           "Washington Capitals" = "WSH")),
-          selectInput("team",
+                  selectInput("team",
                             "Select Past NHL Team:",
                             choices = c("Toronto Arenas",
                                         "Montreal Canadiens",
@@ -157,6 +196,10 @@ ui <- dashboardPage(skin = 'black',
                                         "Winnipeg Jets (1979)",
                                         "Phoenix Coyotes",
                                         "Atlanta Thrashers")),
+          
+            # Make a drop down bar of the statistic the user wants to 
+            # look at
+          
                       selectInput("z",
                                   "Statistic:",
                                   choices = c("Goals" = "goals",
@@ -176,16 +219,27 @@ ui <- dashboardPage(skin = 'black',
                                               "Shifts per Game Played" = "shifts_gp",
                                               "Faceoff Win %" = "fow_perc"
                                               )),
+            # Plot the graph of my statistic vs. players for a certain team
+          
                                         plotOutput("PlayerPlot")
                   )
         )
       )
                       )
 
-# Define server logic required to draw a histogram
+# Define server logic required to make my application
+
 server <- function(input, output) {
+  
+  # define my data as reactive so it can take the inputs of the 
+  # user into the plots
+  
   teamreact <- reactive({
     teams %>% 
+      
+      # Filter for the season the user inputs. Group by the team and sum
+      # the selected statistic for each team. 
+      
       filter(start >= input$season[1] & end <= input$season[2]) %>% 
       group_by(team) %>% 
       summarize(sum = sum(!! rlang:: sym(input$y))) %>% 
@@ -194,12 +248,20 @@ server <- function(input, output) {
   })
   playerreact <- reactive({
     players %>%
+      
+      # Filter for the team the user inputs. Group by the player and sum
+      # the selected statistic for each player. 
+      
       filter(team == input$team1) %>%
       group_by(name) %>% 
       summarize(total = sum(!! rlang:: sym(input$z))) %>%
       arrange(desc(total)) %>% 
       slice(1:20)
   })
+  
+      # Make the ggplot for the specifications the user selected.
+      # Rotate the x axis team/player names so they're legible.
+      # Add axes labels.
   
     output$TeamPlot <- renderPlot({
         teamreact() %>% 
@@ -222,4 +284,5 @@ server <- function(input, output) {
 }
 
 # Run the application 
+
 shinyApp(ui = ui, server = server)

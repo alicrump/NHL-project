@@ -7,6 +7,9 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+# Load in my libraries 
+
 library(tidyverse)
 library(janitor)
 library(ggplot2)
@@ -25,7 +28,10 @@ I discussed the issues I've had and my current plan with Preceptor and he says t
 I successfully loaded the NHL team data and loaded half of the NHL player data. I think webscraper quits while extracting the player data because there are nearly 40,000 data entries and 800 total pages that webscraper must scan. I made my plot, which I described in Milestone 4, using the team data.  
 
 ```{r, read team data}
-# Load team data
+# Load team data. Set the column types to doubles and make any blank entries
+# NA. Remove extra webscraper variables and change season variable so that 
+# 2019-20 for example is now a variable called start which is 2019 and a 
+# variable called end which is 2020. 
 
 teams <- read_csv("raw-data/nhl_teams.csv", col_types = cols(
   team = col_character(),
@@ -58,7 +64,8 @@ teams <- read_csv("raw-data/nhl_teams.csv", col_types = cols(
 
 
 ```{r, read player data}
-# Load data from 1917-1918 to 1942-1943 seasons
+# Load data from 1917-1918 to 1942-1943 seasons. 
+# Make blank entries NA and remove extra webscraper variables.
 
 one <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>% 
   clean_names() %>% 
@@ -66,6 +73,7 @@ one <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 1943-1944 to 1968-1969 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 two <- read_csv("raw-data/fortythree_sixtyeight.csv") %>% 
   clean_names() %>% 
@@ -73,6 +81,7 @@ two <- read_csv("raw-data/fortythree_sixtyeight.csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 1969-1970 to 1982-1983 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 three <- read_csv("raw-data/sixtynine_eightytwo.csv") %>% 
   clean_names() %>% 
@@ -80,6 +89,7 @@ three <- read_csv("raw-data/sixtynine_eightytwo.csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 1983-1984 to 1990-1991 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 four <- read_csv("raw-data/eightythree_ninety.csv") %>% 
   clean_names() %>% 
@@ -87,6 +97,7 @@ four <- read_csv("raw-data/eightythree_ninety.csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 1991-1992 to 1997-1998 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 five <- read_csv("raw-data/ninetyone_ninetyseven.csv") %>% 
   clean_names() %>% 
@@ -94,6 +105,7 @@ five <- read_csv("raw-data/ninetyone_ninetyseven.csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 1998-1999 to 2005-2006 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 six <- read_csv("raw-data/ninetyeight_ohfive.csv") %>% 
   clean_names() %>% 
@@ -101,6 +113,7 @@ six <- read_csv("raw-data/ninetyeight_ohfive.csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 2006-2007 to 2012-2013 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 seven <- read_csv("raw-data/ohsix_twelve.csv") %>% 
   clean_names() %>% 
@@ -108,6 +121,7 @@ seven <- read_csv("raw-data/ohsix_twelve.csv") %>%
   select(-web_scraper_order, -web_scraper_start_url)
 
 # Load data from 2013-2014 to 2019 seasons
+# Make blank entries NA and remove extra webscraper variables.
 
 eight <- read_csv("raw-data/thirteen_nineteen.csv") %>% 
   clean_names() %>% 
@@ -116,8 +130,10 @@ eight <- read_csv("raw-data/thirteen_nineteen.csv") %>%
 ```
 
 
-```{r, read player data}
-# Join all the data frames into one
+```{r, combine player data}
+# Join all the data frames into one and change season variable so that 
+# 2019-20 for example is now a variable called start which is 2019 and a 
+# variable called end which is 2020. 
 
 players <- rbind(eight,seven,six,five,four,three,two,one) %>% 
   distinct(name, season, team, goals, .keep_all = TRUE) %>% 
@@ -137,7 +153,8 @@ players <- rbind(eight,seven,six,five,four,three,two,one) %>%
 
 
 ```{r, move data}
-# I'm moving my player and team data to the shiny app folder so that shiny can "see" it.
+# I'm moving my player and team data to the shiny app folder so that shiny
+# can "see" it.
 
 write_rds(teams, "nhl/teams.rds")
 write_rds(players, "nhl/players.rds")
@@ -148,6 +165,8 @@ write_rds(players, "nhl/players.rds")
 
 
 ### Milestone 4
+I created these graphics for Milestone 4 before I needed to change my season variable, so the x-axes are not quite right.  
+
 ```{r}
 # I created this graphic before I needed to change my season variable so the
 # x axis is not quite right
