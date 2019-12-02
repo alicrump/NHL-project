@@ -34,32 +34,65 @@ I successfully loaded the NHL team data and loaded half of the NHL player data. 
 # variable called end which is 2020. 
 
 teams <- read_csv("raw-data/nhl_teams.csv", col_types = cols(
-  team = col_character(),
-  season = col_character(),
-  games_played = col_double(),
-  wins = col_double(),
-  losses = col_double(),
-  ties = col_double(),
-  overtime = col_double(),
-  points = col_double(),
-  row = col_double(),
-  p_perc = col_double(),
-  goals_for = col_double(),
-  goals_against = col_double(),
-  goalsf_per_gp = col_double(),
-  goalsa_per_gp = col_double(),
-  powerplay_perc = col_double(),
-  penalty_kill_perc = col_double(),
-  shots_per_gp = col_double(),
-  shots_against_per_gp = col_double(),
-  fow_perc = col_double())) %>% 
+                                                              team = col_character(),
+                                                              season = col_character(),
+                                                              games_played = col_double(),
+                                                              wins = col_double(),
+                                                              losses = col_double(),
+                                                              ties = col_double(),
+                                                              overtime = col_double(),
+                                                              points = col_double(),
+                                                              row = col_double(),
+                                                              p_perc = col_double(),
+                                                              goals_for = col_double(),
+                                                              goals_against = col_double(),
+                                                              goalsf_per_gp = col_double(),
+                                                              goalsa_per_gp = col_double(),
+                                                              powerplay_perc = col_double(),
+                                                              penalty_kill_perc = col_double(),
+                                                              shots_per_gp = col_double(),
+                                                              shots_against_per_gp = col_double(),
+                                                              fow_perc = col_double())) %>% 
   clean_names() %>% 
   na_if("--") %>% 
   select(-web_scraper_order, -web_scraper_start_url) %>% 
-  separate(season, c("start","end"), sep = "-") %>% 
-  mutate(start = as.numeric(start), end = as.numeric(end)) %>% 
-  mutate(end = ifelse(start<=2000, end + 1900, end + 2000)) %>% 
-  mutate(end = ifelse(start == 1999, 2000, end))
+  filter(team != is.na(team)) %>% 
+  distinct(team, season, .keep_all = TRUE) %>% 
+  mutate(color = case_when(team == "Anaheim Ducks" ~ "golden_rod3",
+                           team == "Arizona Coyotes" ~ "tan",
+                           team == "Boston Bruins" ~ "golden_rod3",
+                           team == "Buffalo Sabres"~ "navy",
+                           team == "Carolina Hurricanes" ~ "dodgerblue4",
+                           team == "Columbus Blue Jackets" ~ "golden_rod3",
+                           team == "Calgary Flames" ~ "brown2",
+                           team == "Chicago Blackhawks" ~ "red",
+                           team == "Colorado Avalanche" ~ "palevioletred4",
+                           team == "Dallas Stars" ~ "seagreen4",
+                           team == "Detroit Red Wings" ~ "red",
+                           team == "Edmonton Oilers" ~ "orangered1",
+                           team == "Florida Panthers" ~ "navy",
+                           team == "Los Angeles Kings" ~ "snow3",
+                           team == "Minnesota Wild" ~ "darkgreen",
+                           team == "Montréal Canadiens" ~ "brown3",
+                           team == "New Jersey Devils" ~ "red",
+                           team == "Nashville Predators" ~ "golden_rod3",
+                           team == "New York Islanders" ~ "dodgerblue3",
+                           team == "New York Rangers" ~ "blue",
+                           team == "Ottawa Senators" ~ "brown2",
+                           team == "Philadelphia Flyers" ~ "chocolate1",
+                           team == "Pittsburgh Penguins" ~ "black",
+                           team == "San Jose Sharks" ~ "darkslategray4",
+                           team == "St. Louis Blues" ~ "mediumblue",
+                           team == "Tampa Bay Lightning" ~ "royalblue4",
+                           team == "Toronto Maple Leafs" ~ "dodgerblue4",
+                           team == "Vancouver Canucks" ~ "forestgreen",
+                           team == "Vegas Golden Knights" ~ "lightgoldenrod3",
+                           team == "Winnipeg Jets" ~ "maroon",
+                           team == "Washington Capitals" ~ "firebrick3"))
+  # separate(season, c("start","end"), sep = "-") %>% 
+  # mutate(start = as.numeric(start), end = as.numeric(end)) %>% 
+  # mutate(end = ifelse(start<=2000, end + 1900, end + 2000)) %>% 
+  # mutate(end = ifelse(start == 1999, 2000, end))
 ```
 
 
@@ -137,11 +170,11 @@ eight <- read_csv("raw-data/thirteen_nineteen.csv") %>%
 
 players <- rbind(eight,seven,six,five,four,three,two,one) %>% 
   distinct(name, season, team, goals, .keep_all = TRUE) %>% 
-  separate(season, c("start","end"), sep = "-") %>% 
-  mutate(start = as.numeric(start), end = as.numeric(end)) %>% 
-  mutate(end = ifelse(start<=2000, end + 1900, end + 2000)) %>% 
-  mutate(end = ifelse(start == 1999, 2000, end)) %>% 
-  
+  # separate(season, c("start","end"), sep = "-") %>% 
+  # mutate(start = as.numeric(start), end = as.numeric(end)) %>% 
+  # mutate(end = ifelse(start<=2000, end + 1900, end + 2000)) %>% 
+  # mutate(end = ifelse(start == 1999, 2000, end)) %>% 
+  # 
   # Make all my data types doubles (or their appropriate type)
   
   mutate(points_per_gp = as.double(points_per_gp),
@@ -174,13 +207,13 @@ I created these graphics for Milestone 4 before I needed to change my season var
 # season statistics and plot the Flyers' team points over the past 50 years.
 
 teams %>% 
-  filter(team == "Philadelphia Flyers", points != is.na(points), start != 2019) %>%
-  ggplot(aes(x = start, y = points)) +
+  filter(team == "Philadelphia Flyers", points != is.na(points), season != 2019) %>%
+  ggplot(aes(x = season, y = points)) +
   geom_col(fill = "chocolate1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(title = "Philadelphia Flyers Points", subtitle = "1967-2018 Seasons") +
-  xlab("Season") +
+  # xlab("Season") +
   ylab("Points") +
   theme(legend.position = "none", legend.title = element_blank())
 ```
@@ -190,8 +223,8 @@ teams %>%
 # x axis is not quite right
 
 teams %>% 
-  filter(team == "Philadelphia Flyers", points != is.na(points), start != 2019) %>%
-  ggplot(aes(x = start, y = goals_for)) +
+  filter(team == "Philadelphia Flyers", points != is.na(points), season != 2019) %>%
+  ggplot(aes(x = season, y = goals_for)) +
   geom_col(fill = "chocolate1") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
