@@ -18,11 +18,13 @@ library(ggrepel)
 library(tidyverse)
 library(shinydashboard)
 library(forcats)
+library(leaflet)
 
 # Load in the cleaned data into Shiny
 
 teams <- read_rds("teams.rds")
 players <- read_rds("players.rds")
+arenas<- read_rds("arenas.rds")
 
 # Define UI for application
 # Use a black theme because that is the NHL's color in their logo
@@ -39,15 +41,18 @@ ui <- dashboardPage(skin = 'black',
         sidebarMenu(
           menuItem("Home", tabName = "home"),
           menuItem("Team Stats", tabName = "teams"),
-          menuItem("Player Stats", tabName = "players")
+          menuItem("Player Stats", tabName = "players"),
+          menuItem("Predictions", tabName = "model"
+          )
         )
       ),
       dashboardBody(
         tabItems(
           
-          # Creating the About page in my dashboard
+          # Creating the Home page in my dashboard
           
           tabItem(tabName = "home",
+                  leafletOutput("mymap", height = "500"),
                   h1("About the project"),
                   p("The National Hockey League (NHL) recently published the complete
                     digitization of their statistical records, dating back 100 years to
@@ -440,7 +445,9 @@ ui <- dashboardPage(skin = 'black',
           tabItem(tabName = "player_description",
                   h1("Description"),
                   p("Players are ordered based on the number of points they scored that season."))
-                  )
+                  ),
+          tabItem(tabName = "model",
+                  h1("2019-2020 Season Predictions"))
         )
       )
                       )
@@ -488,7 +495,8 @@ server <- function(input, output) {
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         xlab("Team") +
         ylab("Statistic") +
-        theme(legend.position = "none")
+        theme(legend.position = "none") +
+        geom_text(aes(label = sum), nudge_y = -10)
     })
     
     output$PlayerPlot <- renderPlot({
@@ -499,6 +507,14 @@ server <- function(input, output) {
         xlab("Player") +
         ylab("Statistic") +
         theme(legend.position = "none")
+    })
+    
+    output$mymap <- renderLeaflet({
+      arenas %>% 
+      leaflet() %>% 
+        addTiles() %>%
+        # setView(lng = -93.85, lat = 37.45, zoom = 3)
+        addMarkers(popup = arenas$label)
     })
     
 }

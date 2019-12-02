@@ -235,7 +235,9 @@ teams %>%
 ```
 
 ```{r}
-flyers <- teams %>% 
-  filter(team == "Philadelphia Flyers")
+teams %>% 
+  filter(team == "Philadelphia Flyers") %>% 
+  ggplot(aes(x = season, y = points)) +
+  geom_point()
 ```
 
