@@ -26,6 +26,12 @@ teams <- read_rds("teams.rds")
 players <- read_rds("players.rds")
 arenas<- read_rds("arenas.rds")
 
+flyers <- teams %>% 
+  filter(team == "Philadelphia Flyers") %>% 
+  filter(season == "2019-20")
+
+#logo <- makeIcon(iconUrl = "https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjpjJL4k5jmAhXOJt8KHWWlCBQQjRx6BAgBEAQ&url=%2Furl%3Fsa%3Di%26rct%3Dj%26q%3D%26esrc%3Ds%26source%3Dimages%26cd%3D%26ved%3D%26url%3Dhttps%253A%252F%252Fen.wikipedia.org%252Fwiki%252FNational_Hockey_League%26psig%3DAOvVaw1GY6AJY7pKjV0Q-Yh2mZvU%26ust%3D1575417024037823&psig=AOvVaw1GY6AJY7pKjV0Q-Yh2mZvU&ust=1575417024037823", iconWidth = 5, iconHeight = 5)
+
 # Define UI for application
 # Use a black theme because that is the NHL's color in their logo
 
@@ -33,17 +39,17 @@ ui <- dashboardPage(skin = 'black',
                     
       # Add the title of my application
       
-      dashboardHeader(title = "NHL Statistics"),
+      dashboardHeader(title = "NHL Statistics"),#, icon = icon("logo")),
       
       # Create the sidebar navigation
       
       dashboardSidebar(
         sidebarMenu(
-          menuItem("Home", tabName = "home"),
-          menuItem("Team Stats", tabName = "teams"),
+          menuItem("Home", tabName = "home", icon = icon("home")),
+          menuItem("Current NHL Team Stats", tabName = "teams"),
           menuItem("Player Stats", tabName = "players"),
-          menuItem("Predictions", tabName = "model"
-          )
+          menuItem("Predictions", tabName = "model"),
+          menuItem("Defunct NHL Team Stats", tabName = "defunct")
         )
       ),
       dashboardBody(
@@ -52,17 +58,45 @@ ui <- dashboardPage(skin = 'black',
           # Creating the Home page in my dashboard
           
           tabItem(tabName = "home",
+                  h1("NHL Team Locations"),
+                  p("Select any team icon to view the team name and location of the team's stadium!"),
                   leafletOutput("mymap", height = "500"),
-                  h1("About the project"),
-                  p("The National Hockey League (NHL) recently published the complete
-                    digitization of their statistical records, dating back 100 years to
-                    the first season in 1917-1918. This data includes team statistics and
-                    player statistics as well as visualization and filtering tools at",
-                    tags$a("www.nhl.com", href = "http://www.nhl.com/stats/"),". The page includes more than
+                  h3("Content"),
+                  p("Thank you for viewing my project! You can navigate the side bar to view team stastistics
+                    for current and defunct NHL teams, player statistics, and predictions for the 2019-20 season. 
+                    Some statistics include goals, assists, powerplay %, penalty minutes, etc."),
+                  h3("About me"),
+                  p("My name is",
+                    tags$a("Ali Crump", href = "https://www.linkedin.com/in/ali-crump-627503183/"),
+                    "and I am a junior at Harvard studying Applied Mathematics in Government. You
+                    can find my source code", tags$a("here", href = "https://github.com/alicrump/project"),"."),
+                  br(),
+                  p("I love
+                    the idea of using analytics in sports because it ramps up the competition
+                    factor; each team is trying to get an advantage over the others in any
+                    way that they can, and turning to analytics can allow you to view the data
+                    in a new and potentially illuminating way. Analytics is increasingly being
+                    applied to sports; teams in the MLB have large sabermetrics and statistics
+                    departments, for example. I’m on the women’s lacrosse team at Harvard and
+                    we even have a mathematician who evaluates our practices!"),
+                  br(),
+                  p("I decided to
+                    choose NHL data for my project because I have grown up watching the
+                    Philadelphia Flyers and attending games with my family. I really wanted
+                    to apply this type of analysis to a team I’ve followed my whole life to
+                    perhaps see how their goals, power plays, save percentage, and more have
+                    had an effect (if any) on their record and standings over the years."),
+                  h3("The Data"),
+                  p("The National Hockey League (", tags$a("NHL", href = "http://www.nhl.com/"), ")recently published the",
+                  tags$a("complete digitization of their statistical records", href = "http://www.nhl.com/stats/"), "dating back 100 years to
+                    the first season in 1917-1918 (although unfortunately missing data for the
+                    2004-05 season!). This data includes team statistics and
+                    player statistics as well as visualization and filtering tools. The page includes more than
                     15 million player and game data points, with those from 1917 to 1987
                     previously unavailable. The data points range from more typical ice
                     hockey statistics such as goals, assists, and points to penalty minutes,
-                    shot percentage, and time on ice."),
+                    shot percentage, and time on ice to more unique statistics like shifts per game and 
+                    game-winning goals."),
                     br(),
                     p("The data is not available for download
                     on their website, so I had to extract the data from the website using
@@ -76,29 +110,13 @@ ui <- dashboardPage(skin = 'black',
                     a csv file which R is able to understand. One complication I faced was
                     the sheer amount of data; my computer was not able to extract it all at
                     once. I had to section the data by year, into 25 year increments so that
-                    my computer could extract the data in a reasonable amount of time."),
-                    br(),
-                    p("I love
-                    the idea of using analytics in sports because it ramps up the competition
-                    factor; each team is trying to get an advantage over the others in any
-                    way that they can, and turning to analytics can allow you to view the data
-                    in a new and potentially illuminating way. Analytics is increasingly being
-                    applied to sports; teams in the MLB have large sabermetrics and statistics
-                    departments, for example. I’m on the women’s lacrosse team at Harvard and
-                    we even have a mathematician who evaluates our practices!"),
-                    br(),
-                    p("I decided to
-                    choose NHL data for my project because I have grown up watching the
-                    Philadelphia Flyers and attending games with my family. I really wanted
-                    to apply this type of analysis to a team I’ve followed my whole life to
-                    perhaps see how their goals, power plays, save percentage, and more have
-                    had an effect (if any) on their record and standings over the years.")
+                    my computer could extract the data in a reasonable amount of time.")
           ),
           
           # Create the team data page
           
           tabItem(tabName = "teams",
-                  h1("Team Data"),
+                  h1("Team Stats"),
                   
           # Add a drop down bar for which statistic the user wants to view
           
@@ -222,7 +240,7 @@ ui <- dashboardPage(skin = 'black',
                                 "2017-2018" = "2017-18",
                                 "2018-2019" = "2018-19",
                                 "2019-2020" = "2019-20"
-                              )),
+                              ), selected = "2018-19"),
           
           # Plot my graph of the statistic vs. team
           
@@ -239,6 +257,7 @@ ui <- dashboardPage(skin = 'black',
           
           tabItem(tabName = "players",
                   h1("Player Data"),
+                  h4("Displaying the top 20 for each statistic"),
             
           # Allow user to select a team to view player stats for
           # In my final project I might allow the user to view more than
@@ -280,35 +299,7 @@ ui <- dashboardPage(skin = 'black',
                                           "Vegas Golden Knights" = "VGK",
                                           "Winnipeg Jets" = "WPG",
                                           "Washington Capitals" = "WSH")),
-                  selectInput("team",
-                            "Select Past NHL Team:",
-                            choices = c("Toronto Arenas",
-                                        "Montreal Canadiens",
-                                        "Ottawa Senators (1917)",
-                                        "Montreal Wanderers",
-                                        "Toronto St. Patricks",
-                                        "Quebec Bulldogs",
-                                        "Hamilton Tigers",
-                                        "Montreal Maroons",
-                                        "New York Americans",
-                                        "Pittsburgh Pirates",
-                                        "Detroit Cougars",
-                                        "Detroit Falcons",
-                                        "Philadelphia Quakers",
-                                        "St. Louis Eagles",
-                                        "Brooklyn Americans",
-                                        "Minnesota North Stars",
-                                        "Oakland Seals",
-                                        "California Golden Seals",
-                                        "Atlanta Flames",
-                                        "Kansas City Scouts",
-                                        "Cleveland Barons",
-                                        "Colorado Rockies",
-                                        "Hartford Whalers",
-                                        "Quebec Nordiques",
-                                        "Winnipeg Jets (1979)",
-                                        "Phoenix Coyotes",
-                                        "Atlanta Thrashers")),
+                
           
             # Make a drop down bar of the statistic the user wants to 
             # look at
@@ -438,7 +429,7 @@ ui <- dashboardPage(skin = 'black',
                         "2017-2018" = "2017-18",
                         "2018-2019" = "2018-19",
                         "2019-2020" = "2019-20"
-                      )),
+                      ), selected = "2018-19"),
             # Plot the graph of my statistic vs. players for a certain team
           
                                         plotOutput("PlayerPlot"),
@@ -447,7 +438,60 @@ ui <- dashboardPage(skin = 'black',
                   p("Players are ordered based on the number of points they scored that season."))
                   ),
           tabItem(tabName = "model",
-                  h1("2019-2020 Season Predictions"))
+                  h1("2019-2020 Season Predictions for Philadelphia Flyers"),
+                  selectInput(inputId = "model_stat",
+                              "Statistic:",
+                              choices = c("Goals For" = "goals_for",
+                                          "Goals Against" = "goals_against",
+                                          "Face-Off Win %" = "fow_perc",
+                                          "Shots For" = "shots_per_gp",
+                                          "Shots Against" = "shots_against_per_gp",
+                                          "Powerplay %" = "powerplay_perc",
+                                          "Penalty Kill %" = "penalty_kill_perc")),
+                  plotOutput("model")
+                  ),
+          tabItem(tabName = "defunct",
+                  h1("Past NHL Team Stats"),
+                  selectInput("defunct_team",
+                              "Select Past NHL Team:",
+                              choices = c("Toronto Arenas",
+                                          "Montreal Canadiens",
+                                          "Ottawa Senators (1917)",
+                                          "Montreal Wanderers",
+                                          "Toronto St. Patricks",
+                                          "Quebec Bulldogs",
+                                          "Hamilton Tigers",
+                                          "Montreal Maroons",
+                                          "New York Americans",
+                                          "Pittsburgh Pirates",
+                                          "Detroit Cougars",
+                                          "Detroit Falcons",
+                                          "Philadelphia Quakers",
+                                          "St. Louis Eagles",
+                                          "Brooklyn Americans",
+                                          "Minnesota North Stars",
+                                          "Oakland Seals",
+                                          "California Golden Seals",
+                                          "Atlanta Flames",
+                                          "Kansas City Scouts",
+                                          "Cleveland Barons",
+                                          "Colorado Rockies",
+                                          "Hartford Whalers",
+                                          "Quebec Nordiques",
+                                          "Winnipeg Jets (1979)",
+                                          "Phoenix Coyotes",
+                                          "Atlanta Thrashers")),
+                  selectInput(inputId = "statistic",
+                              "Statistic:",
+                              choices = c("Points" = "points",
+                                          "Goals For" = "goals_for",
+                                          "Goals Against" = "goals_against",
+                                          "Face-Off Win %" = "fow_perc",
+                                          "Shots For" = "shots_per_gp",
+                                          "Shots Against" = "shots_against_per_gp",
+                                          "Powerplay %" = "powerplay_perc",
+                                          "Penalty Kill %" = "penalty_kill_perc")),
+                  plotOutput("DefunctPlot"))
         )
       )
                       )
@@ -484,6 +528,19 @@ server <- function(input, output) {
       slice(1:20)
   })
   
+  modelreact <- reactive({
+    teams %>%
+      mutate(stat = (!! rlang:: sym(input$model_stat))) %>%
+      filter(stat != 0)
+  })
+  
+  defunctreact <- reactive({
+    teams %>% 
+    filter(team == input$defunct_team) %>% 
+    mutate(statistic = (!! rlang:: sym(input$statistic)))
+    
+  })
+  
       # Make the ggplot for the specifications the user selected.
       # Rotate the x axis team/player names so they're legible.
       # Add axes labels.
@@ -496,7 +553,9 @@ server <- function(input, output) {
         xlab("Team") +
         ylab("Statistic") +
         theme(legend.position = "none") +
-        geom_text(aes(label = sum), nudge_y = -10)
+        geom_text(aes(label = sum), nudge_y = -10) +
+        theme(axis.text.x = element_text(angle = 45)) # +
+        # scale_fill_manual()
     })
     
     output$PlayerPlot <- renderPlot({
@@ -506,7 +565,8 @@ server <- function(input, output) {
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         xlab("Player") +
         ylab("Statistic") +
-        theme(legend.position = "none")
+        theme(legend.position = "none") +
+        theme(axis.text.x = element_text(angle = 45))
     })
     
     output$mymap <- renderLeaflet({
@@ -516,6 +576,23 @@ server <- function(input, output) {
         # setView(lng = -93.85, lat = 37.45, zoom = 3)
         addMarkers(popup = arenas$label)
     })
+    
+    output$model <- renderPlot({
+      modelreact() %>%
+        ggplot(aes(x = stat, y = points)) +
+        geom_point(color = "chocolate1") +
+        #scale_x_continuous()+
+        geom_smooth(method = "lm", se = FALSE) 
+        
+    })
+    
+    output$DefunctPlot <- 
+      renderPlot({
+        defunctreact() %>% 
+          ggplot(aes(x = season, y = statistic)) +
+          geom_col() +
+          theme(axis.text.x = element_text(angle = 90, hjust = 1))
+      })
     
 }
 
