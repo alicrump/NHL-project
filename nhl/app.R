@@ -298,7 +298,14 @@ ui <- dashboardPage(skin = 'black',
                                           "Vancouver Canucks" = "VAN",
                                           "Vegas Golden Knights" = "VGK",
                                           "Winnipeg Jets" = "WPG",
-                                          "Washington Capitals" = "WSH")),
+                                          "Washington Capitals" = "WSH"
+                                          # "All Teams" = c("ANA","ARI","BOS",
+                                          # "BUF","CAR","CBJ","CGY","CHI","COL",
+                                          # "DAL","DET","EDM","FLA","LAK","MIN",
+                                          # "MTL","NJD","NSH","NYI","NYR","OTT",
+                                          # "PHI","PIT","SJS","STL","TBL","TOR",
+                                          # "VAN","VGK","WPG","WSH"), selected = "ANA"
+                                          )),
                 
           
             # Make a drop down bar of the statistic the user wants to 
@@ -321,8 +328,8 @@ ui <- dashboardPage(skin = 'black',
                                               "Shot %" = "shot_perc",
                                               "Time on Ice per Game Played" = "toi_gp",
                                               "Shifts per Game Played" = "shifts_gp",
-                                              "Faceoff Win %" = "fow_perc"
-                                              )),
+                                              "Faceoff Win %" = "fow_perc"), selected = "points"
+                                              ),
           selectInput("season2", 
                       "Season:",
                       choices = c(
@@ -480,7 +487,7 @@ ui <- dashboardPage(skin = 'black',
                                           "Quebec Nordiques",
                                           "Winnipeg Jets (1979)",
                                           "Phoenix Coyotes",
-                                          "Atlanta Thrashers")),
+                                          "Atlanta Thrashers"), selected  = "Hartford Whalers"),
                   selectInput(inputId = "statistic",
                               "Statistic:",
                               choices = c("Points" = "points",
@@ -490,7 +497,8 @@ ui <- dashboardPage(skin = 'black',
                                           "Shots For" = "shots_per_gp",
                                           "Shots Against" = "shots_against_per_gp",
                                           "Powerplay %" = "powerplay_perc",
-                                          "Penalty Kill %" = "penalty_kill_perc")),
+                                          "Penalty Kill %" = "penalty_kill_perc"), selected = "Points"),
+                  h5("Warning: If the plot is blank that means there was no data available for that particular statistic or team!"),
                   plotOutput("DefunctPlot"))
         )
       )
@@ -512,8 +520,7 @@ server <- function(input, output) {
       filter(season == input$season1) %>% 
       group_by(team) %>% 
       mutate(sum = sum(!! rlang:: sym(input$y))) %>% 
-      arrange(desc(points)) # %>% 
-      # mutate(team = fct_reorder(team, sum))
+      arrange(desc(points))
   })
   playerreact <- reactive({
     players %>%
@@ -521,7 +528,8 @@ server <- function(input, output) {
       # Filter for the team the user inputs. Group by the player and sum
       # the selected statistic for each player. 
       
-      filter(team == input$team1, season == input$season2) %>%
+      filter(team == input$team1) %>% 
+      filter(season == input$season2) %>%
       group_by(name) %>% 
       mutate(total = sum(!! rlang:: sym(input$z))) %>%
       arrange(desc(total)) %>% 
@@ -547,42 +555,41 @@ server <- function(input, output) {
   
     output$TeamPlot <- renderPlot({
         teamreact() %>% 
-        ggplot(aes(x = reorder(team, -points), y = sum, fill = color)) +
+        ggplot(aes(x = reorder(team, -sum), y = sum, fill = points)) +
         geom_col() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         xlab("Team") +
         ylab("Statistic") +
         theme(legend.position = "none") +
-        geom_text(aes(label = sum), nudge_y = -10) +
-        theme(axis.text.x = element_text(angle = 45)) # +
-        # scale_fill_manual()
+        geom_text(aes(label = sum), color = "coral1", nudge_y = -5) +
+        theme(axis.text.x = element_text(angle = 45))
     })
     
     output$PlayerPlot <- renderPlot({
       playerreact() %>%
-        ggplot(aes(x = reorder(name, -points), y = total)) +
+        ggplot(aes(x = reorder(name, -total), y = total, fill = points)) +
         geom_col() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         xlab("Player") +
         ylab("Statistic") +
         theme(legend.position = "none") +
-        theme(axis.text.x = element_text(angle = 45))
+        theme(axis.text.x = element_text(angle = 45))+
+        geom_text(aes(label = total), color = "coral1", nudge_y = -1)
+      
     })
     
     output$mymap <- renderLeaflet({
       arenas %>% 
       leaflet() %>% 
         addTiles() %>%
-        # setView(lng = -93.85, lat = 37.45, zoom = 3)
         addMarkers(popup = arenas$label)
     })
     
     output$model <- renderPlot({
       modelreact() %>%
         ggplot(aes(x = stat, y = points)) +
-        geom_point(color = "chocolate1") +
-        #scale_x_continuous()+
-        geom_smooth(method = "lm", se = FALSE) 
+        geom_point() +
+        geom_smooth(method = "lm", se = FALSE)
         
     })
     
