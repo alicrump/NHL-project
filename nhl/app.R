@@ -48,8 +48,9 @@ ui <- dashboardPage(skin = 'black',
           menuItem("Home", tabName = "home", icon = icon("home")),
           menuItem("Current NHL Team Stats", tabName = "teams"),
           menuItem("Player Stats", tabName = "players"),
-          menuItem("Predictions", tabName = "model"),
-          menuItem("Defunct NHL Team Stats", tabName = "defunct")
+          menuItem("Models", tabName = "model"),
+          menuItem("Defunct NHL Team Stats", tabName = "defunct"),
+          menuItem("Glossary", tabName = "glossary")
         )
       ),
       dashboardBody(
@@ -58,65 +59,58 @@ ui <- dashboardPage(skin = 'black',
           # Creating the Home page in my dashboard
           
           tabItem(tabName = "home",
-                  h1("NHL Team Locations"),
-                  p("Select any team icon to view the team name and location of the team's stadium!"),
+                  h1("Visualizing the NHL"),
+                  tags$div(class = "widget-user-header bg-blue-active text-center",    
+                  h5("Founded in 1917, the National Hockey League (NHL) is a professional ice hockey league in North America. In the NHL, there are currently 
+                    24 teams based in the United States and 7 based in Canada."),
+                  p("Select any team icon to view the team name and location of the team's stadium!")),
                   leafletOutput("mymap", height = "500"),
                   h3("Content"),
                   p("Thank you for viewing my project! You can navigate the side bar to view team stastistics
-                    for current and defunct NHL teams, player statistics, and predictions for the 2019-20 season. 
-                    Some statistics include goals, assists, powerplay %, penalty minutes, etc."),
+                    for current and defunct NHL teams, player statistics, and predictions for the Philadelphia
+                    Flyers' 2019-20 season. 
+                    The statistics range from more typical ice
+                    hockey statistics such as goals, assists, and points to more unique statistics like penalty-kill percentage, faceoff win percentage, and 
+                    game-winning goals."),
+                  h3("The Data"),
+                  p("The National Hockey League (", tags$a("NHL", href = "http://www.nhl.com/"), ") recently published the",
+                  tags$a("complete digitization of their statistical records", href = "http://www.nhl.com/stats/"), "dating back 100 years to
+                    the first season in 1917-1918 (although unfortunately there is no data for the
+                    2004-05 season due to the lockout!). This data includes team statistics and
+                    player statistics as well as visualization and filtering tools. The page includes more than
+                    15 million player and game data points, with those from 1917 to 1987
+                    previously unavailable. However, the data is not available for download
+                    on their website, so I had to extract the data from the website using
+                    webscraping software from", tags$a("webscraper.io", href = "https://webscraper.io/"),".
+                    This software is an extension for Google Chrome and allows
+                    you to select the data on the website you’re interested in, and then
+                    it navigates multiple pages of the site until it has extracted all of
+                    the data into a downloadable format."),
                   h3("About me"),
                   p("My name is",
                     tags$a("Ali Crump", href = "https://www.linkedin.com/in/ali-crump-627503183/"),
-                    "and I am a junior at Harvard studying Applied Mathematics in Government. You
-                    can find my source code", tags$a("here", href = "https://github.com/alicrump/project"),"."),
-                  br(),
-                  p("I love
+                    "and I am a junior at Harvard studying Applied Mathematics in Government. I love
                     the idea of using analytics in sports because it ramps up the competition
                     factor; each team is trying to get an advantage over the others in any
-                    way that they can, and turning to analytics can allow you to view the data
-                    in a new and potentially illuminating way. Analytics is increasingly being
-                    applied to sports; teams in the MLB have large sabermetrics and statistics
-                    departments, for example. I’m on the women’s lacrosse team at Harvard and
-                    we even have a mathematician who evaluates our practices!"),
+                    way that they can, and turning to analytics can allow you to view your team's 
+                    habits and tendencies
+                    in a new and potentially illuminating way."),
                   br(),
                   p("I decided to
-                    choose NHL data for my project because I have grown up watching the
-                    Philadelphia Flyers and attending games with my family. I really wanted
-                    to apply this type of analysis to a team I’ve followed my whole life to
-                    perhaps see how their goals, power plays, save percentage, and more have
-                    had an effect (if any) on their record and standings over the years."),
-                  h3("The Data"),
-                  p("The National Hockey League (", tags$a("NHL", href = "http://www.nhl.com/"), ")recently published the",
-                  tags$a("complete digitization of their statistical records", href = "http://www.nhl.com/stats/"), "dating back 100 years to
-                    the first season in 1917-1918 (although unfortunately missing data for the
-                    2004-05 season!). This data includes team statistics and
-                    player statistics as well as visualization and filtering tools. The page includes more than
-                    15 million player and game data points, with those from 1917 to 1987
-                    previously unavailable. The data points range from more typical ice
-                    hockey statistics such as goals, assists, and points to penalty minutes,
-                    shot percentage, and time on ice to more unique statistics like shifts per game and 
-                    game-winning goals."),
-                    br(),
-                    p("The data is not available for download
-                    on their website, so I had to extract the data from the website using
-                    webscraping software from", tags$a("webscraper.io", href = "https://webscraper.io/"),". The
-                    website includes tutorials for how to navigate different website layouts,
-                    so I essentially followed those instructions and solved issues with trial
-                    and error. This software is an extension for Google Chrome and allows
-                    you to select the data on the website you’re interested in, and then
-                    it navigates multiple pages of the site until it has extracted all of
-                    the data. Once the data has been extracted, I am able to download it as
-                    a csv file which R is able to understand. One complication I faced was
-                    the sheer amount of data; my computer was not able to extract it all at
-                    once. I had to section the data by year, into 25 year increments so that
-                    my computer could extract the data in a reasonable amount of time.")
+                    choose NHL data for my project because I've always been fascinated by ice hockey. 
+                    I grew up watching my brothers play and attending Flyers games with my family. I really wanted
+                    to apply analyses I've learned in the classroom to a team I’ve followed my whole life."),
+                  br(),
+                  p("You can find my source code", tags$a("here", href = "https://github.com/alicrump/project")," 
+                    and contact me at alisoncrump@college.harvard.edu.")
+    
           ),
           
           # Create the team data page
           
           tabItem(tabName = "teams",
                   h1("Team Stats"),
+                  h5("Select which statistic and season you'd like to look at!"),
                   
           # Add a drop down bar for which statistic the user wants to view
           
@@ -246,18 +240,25 @@ ui <- dashboardPage(skin = 'black',
           
                   plotOutput("TeamPlot"),
           tabItem(tabName = "player_description",
-                  h1("Description"),
-                  p("Teams are ordered based on the number of points they
-                    scored that season. I used points as a method of 
-                    arranging the teams, so the top team in points might
-                    not necessarily be the team who won the Stanley Cup."))
+                  h3("Description"),
+                  p("Teams are colored based on the number of points they
+                    scored that season. The lighter colors of blue are the 
+                    teams which finished the season with the most points, 
+                    and the darker colors of blue are the teams who finished 
+                    the season with the least points. The teams are arranged
+                    in descending order of how they performed on the selected
+                    statistic in the selected season. (The top team in points
+                    (lightest color) is
+                    not necessarily the the team who won the Stanley Cup)."))
                               ),
           
           # Create player data page
           
           tabItem(tabName = "players",
                   h1("Player Data"),
-                  h4("Displaying the top 20 for each statistic"),
+                  h5("Select your favorite NHL team and a statistic
+                     and season you'd like to visualize!"),
+                  
             
           # Allow user to select a team to view player stats for
           # In my final project I might allow the user to view more than
@@ -267,7 +268,7 @@ ui <- dashboardPage(skin = 'black',
                   
           
                   selectInput("team1",
-                              "Select Current NHL Team:",
+                              "Current NHL Team:",
                               choices = c("Anaheim Ducks" = "ANA",
                                           "Arizona Coyotes" = "ARI",
                                           "Boston Bruins" = "BOS",
@@ -437,12 +438,22 @@ ui <- dashboardPage(skin = 'black',
                         "2018-2019" = "2018-19",
                         "2019-2020" = "2019-20"
                       ), selected = "2018-19"),
+          
+          h5("(Displaying the top 20 for each statistic)"),
+          
+          
             # Plot the graph of my statistic vs. players for a certain team
           
                                         plotOutput("PlayerPlot"),
           tabItem(tabName = "player_description",
                   h1("Description"),
-                  p("Players are ordered based on the number of points they scored that season."))
+                  p("Players are colored based on the number of points they
+                    scored that season. The lighter colors of blue are the 
+                    players who finished the season with the most points, 
+                    and the darker colors of blue are the players who finished 
+                    the season with the least points. The teams are arranged
+                    in descending order of how they performed on the selected
+                    statistic in the selected season."))
                   ),
           tabItem(tabName = "model",
                   h1("2019-2020 Season Predictions for Philadelphia Flyers"),
@@ -455,10 +466,25 @@ ui <- dashboardPage(skin = 'black',
                                           "Shots Against" = "shots_against_per_gp",
                                           "Powerplay %" = "powerplay_perc",
                                           "Penalty Kill %" = "penalty_kill_perc")),
-                  plotOutput("model")
+                  plotOutput("model"),
+                  h3("Description"),
+                  p("Above is a linear model which displays the relationship between the 
+                    selected statistic and the number of points an NHL team has. If the
+                    slope of our regression line is positive, we say that the statistic and 
+                    points are positively correlated. If the slope is negative, we say that
+                    the statistic and points are negatively correlated."),
+                  br(),
+                  p("If the data points are closely clustered around our regression line,
+                    we might say that our model is a good predictor of an NHL team's points
+                    for a particular statistic.")
                   ),
           tabItem(tabName = "defunct",
                   h1("Past NHL Team Stats"),
+                  h5("There are 19 defunct and relocated NHL teams. Some relocated teams
+                     include the Hartford Whalers and the Quebec Nordiques, which became 
+                     the Carolina Hurricanes and Colorado Avalanche, respectively. Some 
+                     teams like the Philadelphia Quakers, St. Louis Eagles, and the Montreal 
+                     Maroons became defunct due to the Great Depression."),
                   selectInput("defunct_team",
                               "Select Past NHL Team:",
                               choices = c("Toronto Arenas",
@@ -499,7 +525,60 @@ ui <- dashboardPage(skin = 'black',
                                           "Powerplay %" = "powerplay_perc",
                                           "Penalty Kill %" = "penalty_kill_perc"), selected = "Points"),
                   h5("Warning: If the plot is blank that means there was no data available for that particular statistic or team!"),
-                  plotOutput("DefunctPlot"))
+                  plotOutput("DefunctPlot"),
+                  h3("Description"),
+                  p("This plot shows the relationship between the selected defunct teams' statistic over
+                    the history of their particular franchise. Unlike the team stats plot, we only see
+                    one team at a time since these defunct teams were not around at the same times.")),
+          tabItem(tabName = "glossary",
+                  h1("Glossary"),
+                  h5("(From http://www.nhl.com/stats/glossary)"),
+                  h3("Assists"),
+                  p("Assists can be awarded to a maximum of two players touching the puck before the 
+                    goal scorer, provided the opposing team has not controlled the puck between the 
+                    potential assists and the goal being scored. Unless otherwise specified, assist 
+                    totals are for all situations (even strength, power play, shorthanded) combined. 
+                    The last teammate to touch the puck before the goal scorer gets is awarded a primary 
+                    assist. The preceding teammate to touch the puck before the first assisting player 
+                    is awarded a secondary assist. Goals scored without teammates passing or otherwise 
+                    touching the puck before it gets to the goal scorer are said to be “unassisted” and 
+                    no assists are awarded."),
+                  h3("Faceoff Win Percentage"),
+                  p("After every whistle, a faceoff is taken between two players on opposing teams. 
+                    Faceoff Win Percentage is the percentage of times a particular team or player won
+                    the faceoff for their team."),
+                  h3("Goals"),
+                  p("The last player to touch the puck before it fully crosses the opponent’s goal line
+                    is awarded a goal scored. In rare cases where an opposing team’s skater directs the
+                    puck into his own goal, the closest player on the scoring team is awarded the goal. 
+                    Unless specified, goal totals are for all situations (even strength, power play, 
+                    shorthanded) combined."),
+                  h3("Penalty Minutes"),
+                  p("Penalty minutes are a total of all penalty minutes, whether those penalties caused
+                    an opposition power play or not."),
+                  h3("Plus-Minus"),
+                  p("Plus-minus is a team’s goal differential while a particular player is on the ice, 
+                    excluding the power play but including empty net situations. All the skaters on the
+                    ice receive a plus or minus when an even strength goal or shorthanded goal is scored
+                    depending on which team scored; plus-minus is not tracked for goalies. However, 
+                    plus-minus is heavily influenced by the strength of a player’s teammates and 
+                    goaltending, as well as small sample variances"),
+                  h3("Points per Game Played"),
+                  p("In comparing the point production of different players, point totals can be divided
+                    by games played e.g. to account for players who have missed games due to injury or 
+                    who have not spent the entire season in the NHL."),
+                  h3("Shooting Percentage"),
+                  p("The percentage of shots on goal (by a team or player) that go in the net, or S% = G/S.
+                    Shooting percentage does not take missed shots or blocked shots into consideration, 
+                    only shots that were saved by the goalie or scored a goal."),
+                  h3("Shots"),
+                  p("Shots are the number of shots on goal taken by a player or team. Attempts blocked and
+                    missed shots are not included. Shots are also called shots on goal, or SOG."),
+                  h3("Time on Ice per Game Played, TOI/GP"),
+                  p("Time On Ice is a player’s playing time in all situations (even strength, power play, 
+                    shorthanded). Consequently, TOI = EVTOI + PPTOI + SHTOI. See “Even strength time on 
+                    ice”, “Power play time on ice”, and “Shorthanded time on ice”."))
+                  
         )
       )
                       )
@@ -589,7 +668,8 @@ server <- function(input, output) {
       modelreact() %>%
         ggplot(aes(x = stat, y = points)) +
         geom_point() +
-        geom_smooth(method = "lm", se = FALSE)
+        geom_smooth(method = "lm", se = FALSE) +
+        labs(x = "Statistic", y = "Points")
         
     })
     
@@ -598,7 +678,8 @@ server <- function(input, output) {
         defunctreact() %>% 
           ggplot(aes(x = season, y = statistic)) +
           geom_col() +
-          theme(axis.text.x = element_text(angle = 90, hjust = 1))
+          theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+          labs(x = "Season", y = "Statistic")
       })
     
 }
