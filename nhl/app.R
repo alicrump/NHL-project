@@ -640,7 +640,7 @@ server <- function(input, output) {
         xlab("Team") +
         ylab("Statistic") +
         theme(legend.position = "none") +
-        geom_text(aes(label = sum), color = "coral1", nudge_y = -5) +
+        geom_text(aes(label = sum), color = "white", nudge_y = -5) +
         theme(axis.text.x = element_text(angle = 45))
     })
     
@@ -653,7 +653,7 @@ server <- function(input, output) {
         ylab("Statistic") +
         theme(legend.position = "none") +
         theme(axis.text.x = element_text(angle = 45))+
-        geom_text(aes(label = total), color = "coral1", nudge_y = -1)
+        geom_text(aes(label = total), color = "white", nudge_y = -1)
       
     })
     
@@ -665,11 +665,19 @@ server <- function(input, output) {
     })
     
     output$model <- renderPlot({
-      modelreact() %>%
-        ggplot(aes(x = stat, y = points)) +
-        geom_point() +
-        geom_smooth(method = "lm", se = FALSE) +
-        labs(x = "Statistic", y = "Points")
+      highlight <- modelreact() %>% filter(season == "2019-20",
+                                           team == "Philadelphia Flyers")
+      modeldata <- 
+        modelreact() %>% 
+        filter(season != "2019-20")
+      ggplot() +
+        geom_point(data=modeldata, aes(x = stat, y = points)) +
+        geom_smooth(data=modeldata, 
+                    aes(x = stat, y = points),
+                    method = "lm", se = FALSE) +
+        geom_vline(data=highlight, aes(xintercept = stat, color = "chocolate1")) +
+        labs(x = "Statistic", y = "Points") +
+        theme(legend.position = "none")
         
     })
     
