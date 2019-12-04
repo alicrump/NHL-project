@@ -439,7 +439,7 @@ ui <- dashboardPage(skin = 'black',
                         "2019-2020" = "2019-20"
                       ), selected = "2018-19"),
           
-          h5("(Displaying the top 20 for each statistic)"),
+          h5("(Displaying the top 15 for each statistic)"),
           
           
             # Plot the graph of my statistic vs. players for a certain team
@@ -459,8 +459,12 @@ ui <- dashboardPage(skin = 'black',
                   h1("2019-2020 Season Predictions for Philadelphia Flyers"),
                   selectInput(inputId = "model_stat",
                               "Statistic:",
-                              choices = c("Goals For" = "goals_for",
-                                          "Goals Against" = "goals_against",
+                              choices = c(#"Goals For" = "goals_for",
+                                          "Goals For Per Game Played" = "goalsf_per_gp",
+                                          "Goals Against Per Game Played" = "goalsa_per_gp",
+                                          "Shots per Game Played" = "shots_per_gp",
+                                          "Shots against per Game Played" = "shots_against_per_gp",
+                                          #"Goals Against" = "goals_against",
                                           "Face-Off Win %" = "fow_perc",
                                           "Shots For" = "shots_per_gp",
                                           "Shots Against" = "shots_against_per_gp",
@@ -486,7 +490,7 @@ ui <- dashboardPage(skin = 'black',
                      teams like the Philadelphia Quakers, St. Louis Eagles, and the Montreal 
                      Maroons became defunct due to the Great Depression."),
                   selectInput("defunct_team",
-                              "Select Past NHL Team:",
+                              "Past NHL Team:",
                               choices = c("Toronto Arenas",
                                           "Montreal Canadiens",
                                           "Ottawa Senators (1917)",
@@ -612,7 +616,8 @@ server <- function(input, output) {
       group_by(name) %>% 
       mutate(total = sum(!! rlang:: sym(input$z))) %>%
       arrange(desc(total)) %>% 
-      slice(1:20)
+      ungroup(name) %>% 
+      top_n(15)
   })
   
   modelreact <- reactive({
