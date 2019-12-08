@@ -1,0 +1,22 @@
+---
+title: "Visualizing NHL Statistics"
+subtitle: "An Analysis of 100 Years of Professional Ice Hockey Data"
+author: "Ali Crump"
+date: "12/8/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(tinytex)
+```
+
+### Introduction
+
+### Methods
+
+### Results
+ 
+### Conclusion
