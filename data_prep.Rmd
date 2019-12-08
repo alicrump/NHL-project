@@ -1,0 +1,152 @@
+---
+title: "Final project"
+author: "Ali Crump"
+date: "10/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+# Load in my libraries 
+
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+```
+
+```{r, read team data}
+
+# Load team data. Set the column types to doubles and make any blank entries
+# NA. Remove extra webscraper variables, blank entries, and duplicates.
+
+teams <- read_csv("raw-data/nhl_teams.csv", col_types = cols(
+                                                              team = col_character(),
+                                                              season = col_character(),
+                                                              games_played = col_double(),
+                                                              wins = col_double(),
+                                                              losses = col_double(),
+                                                              ties = col_double(),
+                                                              overtime = col_double(),
+                                                              points = col_double(),
+                                                              row = col_double(),
+                                                              p_perc = col_double(),
+                                                              goals_for = col_double(),
+                                                              goals_against = col_double(),
+                                                              goalsf_per_gp = col_double(),
+                                                              goalsa_per_gp = col_double(),
+                                                              powerplay_perc = col_double(),
+                                                              penalty_kill_perc = col_double(),
+                                                              shots_per_gp = col_double(),
+                                                              shots_against_per_gp = col_double(),
+                                                              fow_perc = col_double())) %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url) %>% 
+  filter(team != is.na(team)) %>% 
+  distinct(team, season, .keep_all = TRUE)
+
+```
+
+
+```{r, read player data}
+# I had to webscrape the data in chunks because there were so many data points
+# We learned of a new method in class of how to load all of these csv's in a 
+# more efficient way but not until after I had already loaded it like this.
+# For fear of my shiny app not working anymore, I kept it this way even though
+# I know it is a very ineffective way of doing it.
+
+# Load data from 1917-1918 to 1942-1943 seasons. 
+# Make blank entries NA and remove extra webscraper variables.
+
+one <- read_csv("raw-data/seventeen_to_fortytwo (1).csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1943-1944 to 1968-1969 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+two <- read_csv("raw-data/fortythree_sixtyeight.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1969-1970 to 1982-1983 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+three <- read_csv("raw-data/sixtynine_eightytwo.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1983-1984 to 1990-1991 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+four <- read_csv("raw-data/eightythree_ninety.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1991-1992 to 1997-1998 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+five <- read_csv("raw-data/ninetyone_ninetyseven.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 1998-1999 to 2005-2006 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+six <- read_csv("raw-data/ninetyeight_ohfive.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 2006-2007 to 2012-2013 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+seven <- read_csv("raw-data/ohsix_twelve.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+
+# Load data from 2013-2014 to 2019 seasons
+# Make blank entries NA and remove extra webscraper variables.
+
+eight <- read_csv("raw-data/thirteen_nineteen.csv") %>% 
+  clean_names() %>% 
+  na_if("--") %>% 
+  select(-web_scraper_order, -web_scraper_start_url)
+```
+
+
+```{r, combine player data}
+# Join all the data frames into one
+# remove duplicates using distinct
+# specify the data types
+
+players <- rbind(eight,seven,six,five,four,three,two,one) %>% 
+  distinct(name, season, team, goals, .keep_all = TRUE) %>%
+  mutate(points_per_gp = as.double(points_per_gp),
+         shot_perc = as.double(shot_perc),
+         shifts_gp = as.double(shifts_gp),
+         fow_perc = as.double(fow_perc)
+         )
+```
+
+
+```{r, move data to shiny folder}
+# I'm moving my player and team data to the shiny app folder so that shiny
+# can "see" it.
+
+write_rds(teams, "nhl/teams.rds")
+write_rds(players, "nhl/players.rds")
+
+
+```
+
+
+
+

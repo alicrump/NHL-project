@@ -20,17 +20,11 @@ library(shinydashboard)
 library(forcats)
 library(leaflet)
 
-# Load in the cleaned data into Shiny
+# Load in the cleaned data into Shiny folder
 
 teams <- read_rds("teams.rds")
 players <- read_rds("players.rds")
 arenas<- read_rds("arenas.rds")
-
-flyers <- teams %>% 
-  filter(team == "Philadelphia Flyers") %>% 
-  filter(season == "2019-20")
-
-#logo <- makeIcon(iconUrl = "https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjpjJL4k5jmAhXOJt8KHWWlCBQQjRx6BAgBEAQ&url=%2Furl%3Fsa%3Di%26rct%3Dj%26q%3D%26esrc%3Ds%26source%3Dimages%26cd%3D%26ved%3D%26url%3Dhttps%253A%252F%252Fen.wikipedia.org%252Fwiki%252FNational_Hockey_League%26psig%3DAOvVaw1GY6AJY7pKjV0Q-Yh2mZvU%26ust%3D1575417024037823&psig=AOvVaw1GY6AJY7pKjV0Q-Yh2mZvU&ust=1575417024037823", iconWidth = 5, iconHeight = 5)
 
 # Define UI for application
 # Use a black theme because that is the NHL's color in their logo
@@ -39,9 +33,9 @@ ui <- dashboardPage(skin = 'black',
                     
       # Add the title of my application
       
-      dashboardHeader(title = "NHL Statistics"),#, icon = icon("logo")),
+      dashboardHeader(title = "NHL Statistics"),
       
-      # Create the sidebar navigation
+      # Create the sidebar navigation with the different pages
       
       dashboardSidebar(
         sidebarMenu(
@@ -53,39 +47,69 @@ ui <- dashboardPage(skin = 'black',
           menuItem("Glossary", tabName = "glossary")
         )
       ),
+      
+      # Define what the body of my pages are one by one
+      
       dashboardBody(
         tabItems(
           
           # Creating the Home page in my dashboard
           
           tabItem(tabName = "home",
-                  h1("Visualizing the NHL"),
-                  tags$div(class = "widget-user-header bg-blue-active text-center",    
-                  h5("Founded in 1917, the National Hockey League (NHL) is a professional ice hockey league in North America. In the NHL, there are currently 
-                    24 teams based in the United States and 7 based in Canada."),
-                  p("Select any team icon to view the team name and location of the team's stadium!")),
+                  
+                  # Making my titles and putting them in the center of the page
+                  
+                  tags$div(class = "text-center", h1("Visualizing the NHL")),
+                  tags$div(class = "widget-user-header bg-blue-active
+                           text-center",    
+                  h4("Founded in 1917, the National Hockey League (NHL) is a
+                     professional ice hockey league in North America."),
+                  h4("In the NHL, there are currently teams based in the United
+                     States and 7 based in Canada."),
+                  p("Select any team icon to view the team name and location of
+                    the team's stadium!")),
+                  
+                  # Adding my map
+                  
                   leafletOutput("mymap", height = "500"),
+                  
+                  # Adding the text below my map.
+                  # Adding content section
+                  
                   h3("Content"),
-                  p("Thank you for viewing my project! You can navigate the side bar to view team stastistics
-                    for current and defunct NHL teams, player statistics, and predictions for the Philadelphia
-                    Flyers' 2019-20 season. 
-                    The statistics range from more typical ice
-                    hockey statistics such as goals, assists, and points to more unique statistics like penalty-kill percentage, faceoff win percentage, and 
+                  p("Thank you for viewing my project! You can navigate the
+                    side bar to view team stastistics for current and defunct
+                    NHL teams, player statistics, and predictions for the
+                    Philadelphia Flyers' 2019-20 season. The statistics range
+                    from more typical ice hockey statistics such as goals, 
+                    assists, and points to more unique statistics like
+                    penalty-kill percentage, faceoff win percentage, and 
                     game-winning goals."),
+                  
+                  # Adding section about where the data is from
+                  
                   h3("The Data"),
-                  p("The National Hockey League (", tags$a("NHL", href = "http://www.nhl.com/"), ") recently published the",
-                  tags$a("complete digitization of their statistical records", href = "http://www.nhl.com/stats/"), "dating back 100 years to
-                    the first season in 1917-1918 (although unfortunately there is no data for the
-                    2004-05 season due to the lockout!). This data includes team statistics and
-                    player statistics as well as visualization and filtering tools. The page includes more than
-                    15 million player and game data points, with those from 1917 to 1987
-                    previously unavailable. However, the data is not available for download
-                    on their website, so I had to extract the data from the website using
-                    webscraping software from", tags$a("webscraper.io", href = "https://webscraper.io/"),".
+                  p("The National Hockey League (", 
+                    tags$a("NHL", href = "http://www.nhl.com/"), 
+                    ") recently published the", tags$a("complete digitization
+                    of their statistical records", href = "http://www.nhl.com/stats/"), 
+                    "dating back 100 years to the first season in 1917-1918 
+                    (although unfortunately there is no data for the 2004-05
+                    season due to the lockout!). This data includes team 
+                    statistics and player statistics as well as visualization
+                    and filtering tools. The page includes more than 15 million
+                    player and game data points, with those from 1917 to 1987 
+                    previously unavailable. However, the data is not available
+                    for download on their website, so I had to extract the data
+                    from the website using webscraping software from", 
+                    tags$a("webscraper.io", href = "https://webscraper.io/"),".
                     This software is an extension for Google Chrome and allows
-                    you to select the data on the website you’re interested in, and then
-                    it navigates multiple pages of the site until it has extracted all of
-                    the data into a downloadable format."),
+                    you to select the data on the website you’re interested in,
+                    and then it navigates multiple pages of the site until it
+                    has extracted all of the data into a downloadable format."),
+                  
+                  # Adding a section about me
+                  
                   h3("About me"),
                   p("My name is",
                     tags$a("Ali Crump", href = "https://www.linkedin.com/in/ali-crump-627503183/"),
@@ -112,10 +136,7 @@ ui <- dashboardPage(skin = 'black',
                   h1("Team Stats"),
                   h5("Select which team and statistic you'd like to look at!"),
             
-          # Add a slider that allows the user to select a season start and end
-          # Right now the years have commas in them -- still trying to figure
-          # out how to fix that.
-  
+          # Allow user to select their favorite team to look at the stats of
           
           selectInput("favorite_team", 
                                  "Your Favorite Team:",
@@ -150,7 +171,7 @@ ui <- dashboardPage(skin = 'black',
                                   "Vegas Golden Knights",
                                   "Winnipeg Jets",
                                   "Washington Capitals"
-                      )),
+                      ), selected = "Philadelphia Flyers"),
           
           # Add a drop down bar for which statistic the user wants to view
           
@@ -169,7 +190,10 @@ ui <- dashboardPage(skin = 'black',
           
           # Plot my graph of the statistic vs. team
           
-                  plotOutput("TeamPlot"),
+          plotOutput("TeamPlot"),
+          
+          # Add a description of what the plot is showing and what
+          # the colors mean
           
           tabItem(tabName = "team_description",
                   h3("Description"),
@@ -181,8 +205,9 @@ ui <- dashboardPage(skin = 'black',
                     in descending order of how they performed on the selected
                     statistic in the selected season. (The top team in points
                     (lightest color) is
-                    not necessarily the the team who won the Stanley Cup)."))
-                              ),
+                    not necessarily the the team who won the Stanley Cup).")
+                  )
+          ),
           
           # Create player data page
           
@@ -193,76 +218,69 @@ ui <- dashboardPage(skin = 'black',
                   
             
           # Allow user to select a team to view player stats for
-          # In my final project I might allow the user to view more than
-          # one team at once. I also want the user to be able to select
-          # either a current NHL team or a past NHL team, but couldn't 
-          # figure out how to get them both working simultaneously yet.
                   
-          
-                  selectInput("team1",
-                              "Current NHL Team:",
-                              choices = c("Anaheim Ducks" = "ANA",
-                                          "Arizona Coyotes" = "ARI",
-                                          "Boston Bruins" = "BOS",
-                                          "Buffalo Sabres" = "BUF",
-                                          "Carolina Hurricanes" = "CAR",
-                                          "Columbus Blue Jackets" = "CBJ",
-                                          "Calgary Flames" = "CGY",
-                                          "Chicago Blackhawks" = "CHI",
-                                          "Colorado Avalanche" = "COL",
-                                          "Dallas Stars" = "DAL",
-                                          "Detroit Red Wings" = "DET",
-                                          "Edmonton Oilers" = "EDM",
-                                          "Florida Panthers" = "FLA",
-                                          "Los Angeles Kings" = "LAK",
-                                          "Minnesota Wild" = "MIN",
-                                          "Montréal Canadiens" = "MTL",
-                                          "New Jersey Devils" = "NJD",
-                                          "Nashville Predators" = "NSH",
-                                          "New York Islanders" = "NYI",
-                                          "New York Rangers" = "NYR",
-                                          "Ottawa Senators" = "OTT",
-                                          "Philadelphia Flyers" = "PHI",
-                                          "Pittsburgh Penguins" = "PIT",
-                                          "San Jose Sharks" = "SJS",
-                                          "St. Louis Blues" = "STL",
-                                          "Tampa Bay Lightening" = "TBL",
-                                          "Toronto Maple Leafs" = "TOR",
-                                          "Vancouver Canucks" = "VAN",
-                                          "Vegas Golden Knights" = "VGK",
-                                          "Winnipeg Jets" = "WPG",
-                                          "Washington Capitals" = "WSH"
-                                          # "All Teams" = c("ANA","ARI","BOS",
-                                          # "BUF","CAR","CBJ","CGY","CHI","COL",
-                                          # "DAL","DET","EDM","FLA","LAK","MIN",
-                                          # "MTL","NJD","NSH","NYI","NYR","OTT",
-                                          # "PHI","PIT","SJS","STL","TBL","TOR",
-                                          # "VAN","VGK","WPG","WSH"), selected = "ANA"
-                                          )),
+          selectInput("team1",
+                      "Current NHL Team:",
+                      choices = c("Anaheim Ducks" = "ANA",
+                                  "Arizona Coyotes" = "ARI",
+                                  "Boston Bruins" = "BOS",
+                                  "Buffalo Sabres" = "BUF",
+                                  "Carolina Hurricanes" = "CAR",
+                                  "Columbus Blue Jackets" = "CBJ",
+                                  "Calgary Flames" = "CGY",
+                                  "Chicago Blackhawks" = "CHI",
+                                  "Colorado Avalanche" = "COL",
+                                  "Dallas Stars" = "DAL",
+                                  "Detroit Red Wings" = "DET",
+                                  "Edmonton Oilers" = "EDM",
+                                  "Florida Panthers" = "FLA",
+                                  "Los Angeles Kings" = "LAK",
+                                  "Minnesota Wild" = "MIN",
+                                  "Montréal Canadiens" = "MTL",
+                                  "New Jersey Devils" = "NJD",
+                                  "Nashville Predators" = "NSH",
+                                  "New York Islanders" = "NYI",
+                                  "New York Rangers" = "NYR",
+                                  "Ottawa Senators" = "OTT",
+                                  "Philadelphia Flyers" = "PHI",
+                                  "Pittsburgh Penguins" = "PIT",
+                                  "San Jose Sharks" = "SJS",
+                                  "St. Louis Blues" = "STL",
+                                  "Tampa Bay Lightening" = "TBL",
+                                  "Toronto Maple Leafs" = "TOR",
+                                  "Vancouver Canucks" = "VAN",
+                                  "Vegas Golden Knights" = "VGK",
+                                  "Winnipeg Jets" = "WPG",
+                                  "Washington Capitals" = "WSH"),
+                                   selected = "PHI"
+          ),
                 
           
-            # Make a drop down bar of the statistic the user wants to 
-            # look at
+          # Make a drop down bar of the statistic the user wants to 
+          # look at
           
-                      selectInput("z",
-                                  "Statistic:",
-                                  choices = c("Goals" = "goals",
-                                              "Assists" = "assists",
-                                              "Points" = "points",
-                                              "Plus-Minus" = "plus_minus",
-                                              "Penalty Minutes" = "pim",
-                                              "Points per Game Played" = "points_per_gp",
-                                              "Power Play Goals" = "ppg",
-                                              "Shorthanded Goals" = "shg",
-                                              "Shorthanded Points" = "shp",
-                                              "Game Winning Goals" = "gwg",
-                                              "Overtime Goals" = "otg",
-                                              "Shots" = "shots",
-                                              "Shot %" = "shot_perc",
-                                              "Time on Ice per Game Played" = "toi_gp",
-                                              "Shifts per Game Played" = "shifts_gp",
-                                              "Faceoff Win %" = "fow_perc"), selected = "points"
-                                              ),
+          selectInput("z",
+                      "Statistic:",
+                      choices = c("Goals" = "goals",
+                                  "Assists" = "assists",
+                                  "Points" = "points",
+                                  "Plus-Minus" = "plus_minus",
+                                  "Penalty Minutes" = "pim",
+                                  "Points per Game Played" = "points_per_gp",
+                                  "Power Play Goals" = "ppg",
+                                  "Shorthanded Goals" = "shg",
+                                  "Shorthanded Points" = "shp",
+                                  "Game Winning Goals" = "gwg",
+                                  "Overtime Goals" = "otg",
+                                  "Shots" = "shots",
+                                  "Shot %" = "shot_perc",
+                                  "Time on Ice per Game Played" = "toi_gp",
+                                  "Shifts per Game Played" = "shifts_gp",
+                                  "Faceoff Win %" = "fow_perc"), selected = "points"
+          ),
+          
+          # Allow user to select which season they want to look at
+          
           selectInput("season2", 
                       "Season:",
                       choices = c(
@@ -369,14 +387,18 @@ ui <- dashboardPage(skin = 'black',
                         "2017-2018" = "2017-18",
                         "2018-2019" = "2018-19",
                         "2019-2020" = "2019-20"
-                      ), selected = "2018-19"),
+                      ), selected = "2018-19"
+          ),
           
           h5("(Displaying the top 15 for each statistic)"),
           
           
-            # Plot the graph of my statistic vs. players for a certain team
+          # Plot the graph of my statistic vs. players for a certain team
           
-                                        plotOutput("PlayerPlot"),
+          plotOutput("PlayerPlot"),
+          
+          # add a description of the plot and what the colors mean
+          
           tabItem(tabName = "player_description",
                   h1("Description"),
                   p("Players are colored based on the number of points they
@@ -386,34 +408,51 @@ ui <- dashboardPage(skin = 'black',
                     the season with the least points. The teams are arranged
                     in descending order of how they performed on the selected
                     statistic in the selected season."))
-                  ),
+          ),
+          
+          # Create the page for the models
+          
           tabItem(tabName = "model",
                   h1("2019-2020 Season Predictions for Philadelphia Flyers"),
-                  selectInput(inputId = "model_stat",
-                              "Statistic:",
-                              choices = c(#"Goals For" = "goals_for",
-                                          "Goals For Per Game Played" = "goalsf_per_gp",
-                                          "Goals Against Per Game Played" = "goalsa_per_gp",
-                                          "Shots per Game Played" = "shots_per_gp",
-                                          "Shots against per Game Played" = "shots_against_per_gp",
-                                          #"Goals Against" = "goals_against",
-                                          "Face-Off Win %" = "fow_perc",
-                                          "Shots For" = "shots_per_gp",
-                                          "Shots Against" = "shots_against_per_gp",
-                                          "Powerplay %" = "powerplay_perc",
-                                          "Penalty Kill %" = "penalty_kill_perc")),
-                  plotOutput("model"),
-                  h3("Description"),
-                  p("Above is a linear model which displays the relationship between the 
-                    selected statistic and the number of points an NHL team has. If the
-                    slope of our regression line is positive, we say that the statistic and 
-                    points are positively correlated. If the slope is negative, we say that
-                    the statistic and points are negatively correlated."),
-                  br(),
-                  p("If the data points are closely clustered around our regression line,
-                    we might say that our model is a good predictor of an NHL team's points
-                    for a particular statistic.")
-                  ),
+            
+          # Allow the user to select a stat to look at
+                  
+          selectInput(inputId = "model_stat",
+                      "Statistic:",
+                      choices = c(#"Goals For" = "goals_for",
+                                  "Goals For Per Game Played" = "goalsf_per_gp",
+                                  "Goals Against Per Game Played" = "goalsa_per_gp",
+                                  "Shots per Game Played" = "shots_per_gp",
+                                  "Shots against per Game Played" = "shots_against_per_gp",
+                                  #"Goals Against" = "goals_against",
+                                  "Face-Off Win %" = "fow_perc",
+                                  "Shots For" = "shots_per_gp",
+                                  "Shots Against" = "shots_against_per_gp",
+                                  "Powerplay %" = "powerplay_perc",
+                                  "Penalty Kill %" = "penalty_kill_perc")
+          ),
+          
+          # attach the plot of the model
+          
+          plotOutput("model"),
+          
+          # add a description of what the model is 
+          
+          h3("Description"),
+          p("Above is a linear model which displays the relationship between the 
+            selected statistic and the number of points an NHL team has. If the
+            slope of our regression line is positive, we say that the statistic and 
+            points are positively correlated. If the slope is negative, we say that
+            the statistic and points are negatively correlated."),
+          br(),
+          p("If the data points are closely clustered around our regression line,
+            we might say that our model is a good predictor of an NHL team's points
+            for a particular statistic.")
+          ),
+          
+          # Create the page for the past NHL teams
+          # explain what this page even is and what defunct teams are
+          
           tabItem(tabName = "defunct",
                   h1("Past NHL Team Stats"),
                   h5("There are 19 defunct and relocated NHL teams. Some relocated teams
@@ -421,54 +460,77 @@ ui <- dashboardPage(skin = 'black',
                      the Carolina Hurricanes and Colorado Avalanche, respectively. Some 
                      teams like the Philadelphia Quakers, St. Louis Eagles, and the Montreal 
                      Maroons became defunct due to the Great Depression."),
-                  selectInput("defunct_team",
-                              "Past NHL Team:",
-                              choices = c("Toronto Arenas",
-                                          "Ottawa Senators (1917)",
-                                          "Montreal Wanderers",
-                                          "Toronto St. Patricks",
-                                          "Quebec Bulldogs",
-                                          "Hamilton Tigers",
-                                          "Montreal Maroons",
-                                          "New York Americans",
-                                          "Pittsburgh Pirates",
-                                          "Detroit Cougars",
-                                          "Detroit Falcons",
-                                          "Philadelphia Quakers",
-                                          "St. Louis Eagles",
-                                          "Brooklyn Americans",
-                                          "Minnesota North Stars",
-                                          "Oakland Seals",
-                                          "California Golden Seals",
-                                          "Atlanta Flames",
-                                          "Kansas City Scouts",
-                                          "Cleveland Barons",
-                                          "Colorado Rockies",
-                                          "Hartford Whalers",
-                                          "Quebec Nordiques",
-                                          "Winnipeg Jets (1979)",
-                                          "Phoenix Coyotes",
-                                          "Atlanta Thrashers"), selected  = "Hartford Whalers"),
-                  selectInput(inputId = "statistic",
-                              "Statistic:",
-                              choices = c("Points" = "points",
-                                          "Goals For" = "goals_for",
-                                          "Goals Against" = "goals_against",
-                                          "Face-Off Win %" = "fow_perc",
-                                          "Shots For" = "shots_per_gp",
-                                          "Shots Against" = "shots_against_per_gp",
-                                          "Powerplay %" = "powerplay_perc",
-                                          "Penalty Kill %" = "penalty_kill_perc"), selected = "Points"),
-                  h5("Warning: If the plot is blank that means there was no data available for that particular statistic or team!"),
-                  plotOutput("DefunctPlot"),
-                  h3("Description"),
-                  p("This plot shows the relationship between the selected defunct teams' statistic over
-                    the history of their particular franchise. Unlike the team stats plot, we only see
-                    one team at a time since these defunct teams were not around at the same times.")),
+                  
+          # Allow the user to select a past NHL team
+          
+          selectInput("defunct_team",
+                      "Past NHL Team:",
+                      choices = c("Toronto Arenas",
+                                  "Ottawa Senators (1917)",
+                                  "Montreal Wanderers",
+                                  "Toronto St. Patricks",
+                                  "Quebec Bulldogs",
+                                  "Hamilton Tigers",
+                                  "Montreal Maroons",
+                                  "New York Americans",
+                                  "Pittsburgh Pirates",
+                                  "Detroit Cougars",
+                                  "Detroit Falcons",
+                                  "Philadelphia Quakers",
+                                  "St. Louis Eagles",
+                                  "Brooklyn Americans",
+                                  "Minnesota North Stars",
+                                  "Oakland Seals",
+                                  "California Golden Seals",
+                                  "Atlanta Flames",
+                                  "Kansas City Scouts",
+                                  "Cleveland Barons",
+                                  "Colorado Rockies",
+                                  "Hartford Whalers",
+                                  "Quebec Nordiques",
+                                  "Winnipeg Jets (1979)",
+                                  "Phoenix Coyotes",
+                                  "Atlanta Thrashers"), selected  = "Hartford Whalers"
+          ),
+          
+          # Prompt the user to select a stat to look at
+          
+          selectInput(inputId = "statistic",
+                      "Statistic:",
+                      choices = c("Points" = "points",
+                                  "Goals For" = "goals_for",
+                                  "Goals Against" = "goals_against",
+                                  "Face-Off Win %" = "fow_perc",
+                                  "Shots For" = "shots_per_gp",
+                                  "Shots Against" = "shots_against_per_gp",
+                                  "Powerplay %" = "powerplay_perc",
+                                  "Penalty Kill %" = "penalty_kill_perc"), selected = "Points"),
+          
+          # Warn the user that blank graphs mean these teams were too old to be
+          # tracking certain statistics
+          
+          h5("Warning: If the plot is blank that means there was no data available for that particular statistic or team!"),
+          
+          # attach the plot of season vs statistic
+          
+          plotOutput("DefunctPlot"),
+          
+          # add a description of the plot and what the colors mean
+          
+          h3("Description"),
+          p("This plot shows the relationship between the selected defunct teams' statistic over
+            the history of their particular franchise. Unlike the team stats plot, we only see
+            one team at a time since these defunct teams were not around at the same times.")),
+          
+          # create the glossary page for those not familiar with ice hockey
+          # I added this page after demo day when a lot of people were confused
+          # by the ice hockey statistics they were seeing
+          # I copied most of the term definitions from the nhl stats website
+          
           tabItem(tabName = "glossary",
                   h1("Glossary"),
-                  h5("(From http://www.nhl.com/stats/glossary)"),
-                  h3("Assists"),
+                  h6("(From", tags$a("www.NHL.com", href = "http://www.nhl.com/stats/glossary"), ")"),
+                  h4("Assists"),
                   p("Assists can be awarded to a maximum of two players touching the puck before the 
                     goal scorer, provided the opposing team has not controlled the puck between the 
                     potential assists and the goal being scored. Unless otherwise specified, assist 
@@ -478,38 +540,38 @@ ui <- dashboardPage(skin = 'black',
                     is awarded a secondary assist. Goals scored without teammates passing or otherwise 
                     touching the puck before it gets to the goal scorer are said to be “unassisted” and 
                     no assists are awarded."),
-                  h3("Faceoff Win Percentage"),
+                  h4("Faceoff Win Percentage"),
                   p("After every whistle, a faceoff is taken between two players on opposing teams. 
                     Faceoff Win Percentage is the percentage of times a particular team or player won
                     the faceoff for their team."),
-                  h3("Goals"),
+                  h4("Goals"),
                   p("The last player to touch the puck before it fully crosses the opponent’s goal line
                     is awarded a goal scored. In rare cases where an opposing team’s skater directs the
                     puck into his own goal, the closest player on the scoring team is awarded the goal. 
                     Unless specified, goal totals are for all situations (even strength, power play, 
                     shorthanded) combined."),
-                  h3("Penalty Minutes"),
+                  h4("Penalty Minutes"),
                   p("Penalty minutes are a total of all penalty minutes, whether those penalties caused
                     an opposition power play or not."),
-                  h3("Plus-Minus"),
+                  h4("Plus-Minus"),
                   p("Plus-minus is a team’s goal differential while a particular player is on the ice, 
                     excluding the power play but including empty net situations. All the skaters on the
                     ice receive a plus or minus when an even strength goal or shorthanded goal is scored
                     depending on which team scored; plus-minus is not tracked for goalies. However, 
                     plus-minus is heavily influenced by the strength of a player’s teammates and 
                     goaltending, as well as small sample variances"),
-                  h3("Points per Game Played"),
+                  h4("Points per Game Played"),
                   p("In comparing the point production of different players, point totals can be divided
                     by games played e.g. to account for players who have missed games due to injury or 
                     who have not spent the entire season in the NHL."),
-                  h3("Shooting Percentage"),
+                  h4("Shooting Percentage"),
                   p("The percentage of shots on goal (by a team or player) that go in the net, or S% = G/S.
                     Shooting percentage does not take missed shots or blocked shots into consideration, 
                     only shots that were saved by the goalie or scored a goal."),
-                  h3("Shots"),
+                  h4("Shots"),
                   p("Shots are the number of shots on goal taken by a player or team. Attempts blocked and
                     missed shots are not included. Shots are also called shots on goal, or SOG."),
-                  h3("Time on Ice per Game Played, TOI/GP"),
+                  h4("Time on Ice per Game Played, TOI/GP"),
                   p("Time On Ice is a player’s playing time in all situations (even strength, power play, 
                     shorthanded). Consequently, TOI = EVTOI + PPTOI + SHTOI. See “Even strength time on 
                     ice”, “Power play time on ice”, and “Shorthanded time on ice”."))
@@ -528,21 +590,29 @@ server <- function(input, output) {
   teamreact <- reactive({
     teams %>% 
       
-      # Filter for the season the user inputs. Group by the team and sum
-      # the selected statistic for each team. 
+      # Filter for the team the user inputs. I also filtered to hide
+      # the current season because the statistics will be very low
+      # compared to the other seasons. Rename the statistics input
+      # as stat1 to use later in our plot. I got rid of NA values 
+      # for the stat since stats like faceoff % are more recent and 
+      # for teams like the Bruins that have been around for a very 
+      # long time a majority of the plot would be blank.
       
       filter(team == input$favorite_team, season != "2019-20") %>% 
-      # group_by(team) %>% 
       mutate(stat1 = !! rlang:: sym(input$y)) %>% 
       filter(stat1 != is.na(stat1)) %>% 
-      select(team, season, stat1, color, points)
-      # arrange(desc(points))
+      select(team, season, stat1, points)
+
   })
+  
+  # define player as reactive
+  
   playerreact <- reactive({
     players %>%
       
       # Filter for the team the user inputs. Group by the player and sum
-      # the selected statistic for each player. 
+      # the selected statistic for each player. Take the top 15 players for
+      # each stat.
       
       filter(team == input$team1) %>% 
       filter(season == input$season2) %>%
@@ -553,11 +623,16 @@ server <- function(input, output) {
       top_n(15)
   })
   
+  # define teams as reactive for the model
+  
   modelreact <- reactive({
     teams %>%
       mutate(stat = (!! rlang:: sym(input$model_stat))) %>%
       filter(stat != 0)
   })
+  
+  # define the defunct teams as reactive. filter for the team the user inputs
+  # and rename the input statistic
   
   defunctreact <- reactive({
     teams %>% 
@@ -566,37 +641,42 @@ server <- function(input, output) {
     
   })
   
-      # Make the ggplot for the specifications the user selected.
-      # Rotate the x axis team/player names so they're legible.
-      # Add axes labels.
+  # Make the ggplot for the specifications the user selected.
+  # Rotate the x axis team names so they're legible.
+  # get rid of the gray background.
+  # Add axes labels and labels for each of the columns.
   
-    output$TeamPlot <- renderPlot({
-        teamreact() %>% 
-        ggplot(aes(x = season, y = stat1, fill = points)) +
-        geom_col() +
-        theme_bw() +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-        xlab("Season") +
-        ylab("Statistic") +
-        geom_text(aes(label = stat1), color = "white", nudge_y = -3)
-        
-        
-        
-    })
+  output$TeamPlot <- renderPlot({
+      
+      teamreact() %>% 
+      ggplot(aes(x = season, y = stat1, fill = points)) +
+      geom_col() +
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+      labs(x = "Season", y = "Statistic", fill = "Points") +
+      geom_text(aes(label = stat1), color = "white", nudge_y = -3)
+  })
     
+  # Make the ggplot for the specifications the user selected.
+  # Rotate the x axis player names so they're legible.
+  # get rid of the gray background.
+  # Add axes labels and labels for each of the columns.
+  
     output$PlayerPlot <- renderPlot({
       playerreact() %>%
         ggplot(aes(x = reorder(name, -total), y = total, fill = points)) +
         geom_col() +
         theme_bw() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-        xlab("Player") +
-        ylab("Statistic") +
-        theme(legend.position = "none") +
-        theme(axis.text.x = element_text(angle = 0))+
-        geom_text(aes(label = total), color = "white", nudge_y = -1) 
+        labs(x = "Player", y = "Statistic", fill = "Points") +
+        theme(axis.text.x = element_text(angle = 45))+
+        geom_text(aes(label = total), color = "white", nudge_y = -1)
       
     })
+    
+  # Add my map and markers
+  # found this code at 
+  # (http://rstudio-pubs-static.s3.amazonaws.com/257443_6639015f2f144de7af35ce4615902dfd.html)
     
     output$mymap <- renderLeaflet({
       arenas %>% 
@@ -605,12 +685,19 @@ server <- function(input, output) {
         addMarkers(popup = arenas$label)
     })
     
+    # Make a highlight for the flyers current season to see how they're
+    # doing so far relative to teams in the past
+    # Plot the regression for the stat the user selects with points
+    # filter for a sufficient amount of games played to get rid of the
+    # nhl seasons with only a few games. Add the flyers current stats
+    # with a vertical orange line.
+    
     output$model <- renderPlot({
       highlight <- modelreact() %>% filter(season == "2019-20",
                                            team == "Philadelphia Flyers")
       modeldata <- 
         modelreact() %>% 
-        filter(season != "2019-20")
+        filter(season != "2019-20", games_played >= 78)
       ggplot() +
         geom_point(data=modeldata, aes(x = stat, y = points)) +
         geom_smooth(data=modeldata, 
@@ -623,14 +710,20 @@ server <- function(input, output) {
         
     })
     
+    # plot defunct nhl team data of the inputs the user chose
+    # add axis labels, rotate the x axis labels, and add labels for 
+    # each of the columns
+    
+    
     output$DefunctPlot <- 
       renderPlot({
         defunctreact() %>% 
-          ggplot(aes(x = season, y = statistic)) +
+          ggplot(aes(x = season, y = statistic, fill = points)) +
           geom_col() +
           theme_bw() +
           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-          labs(x = "Season", y = "Statistic")
+          labs(x = "Season", y = "Statistic", fill = "Points") +
+          geom_text(aes(label = statistic), color = "white", nudge_y = -2)
       })
     
 }
