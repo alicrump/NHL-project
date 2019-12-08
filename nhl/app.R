@@ -26,6 +26,7 @@ teams <- read_rds("teams.rds")
 players <- read_rds("players.rds")
 arenas<- read_rds("arenas.rds")
 
+# I mostly used Seeam Noor's project and Allie Russell's project as templates
 # Define UI for application
 # Use a black theme because that is the NHL's color in their logo
 
@@ -113,19 +114,22 @@ ui <- dashboardPage(skin = 'black',
                   h3("About me"),
                   p("My name is",
                     tags$a("Ali Crump", href = "https://www.linkedin.com/in/ali-crump-627503183/"),
-                    "and I am a junior at Harvard studying Applied Mathematics in Government. I love
-                    the idea of using analytics in sports because it ramps up the competition
-                    factor; each team is trying to get an advantage over the others in any
-                    way that they can, and turning to analytics can allow you to view your team's 
-                    habits and tendencies
-                    in a new and potentially illuminating way."),
+                    "and I am a junior at Harvard studying Applied Mathematics 
+                    in Government. I love the idea of using analytics in 
+                    sports because it ramps up the competition factor; each 
+                    team is trying to get an advantage over the others in any
+                    way that they can, and turning to analytics can allow you
+                    to view your team's habits and tendencies in a new and 
+                    potentially illuminating way."),
                   br(),
-                  p("I decided to
-                    choose NHL data for my project because I've always been fascinated by ice hockey. 
-                    I grew up watching my brothers play and attending Flyers games with my family. I really wanted
-                    to apply analyses I've learned in the classroom to a team I’ve followed my whole life."),
+                  p("I decided to choose NHL data for my project because I've
+                  always been fascinated by ice hockey. I grew up watching my
+                  brothers play and attending Flyers games with my family. I 
+                  really wanted to apply analyses I've learned in the classroom
+                  to a team I’ve followed my whole life."),
                   br(),
-                  p("You can find my source code", tags$a("here", href = "https://github.com/alicrump/project")," 
+                  p("You can find my source code", tags$a("here", 
+                  href = "https://github.com/alicrump/project")," 
                     and contact me at alisoncrump@college.harvard.edu.")
     
           ),
@@ -246,7 +250,7 @@ ui <- dashboardPage(skin = 'black',
                                   "Pittsburgh Penguins" = "PIT",
                                   "San Jose Sharks" = "SJS",
                                   "St. Louis Blues" = "STL",
-                                  "Tampa Bay Lightening" = "TBL",
+                                  "Tampa Bay Lightning" = "TBL",
                                   "Toronto Maple Leafs" = "TOR",
                                   "Vancouver Canucks" = "VAN",
                                   "Vegas Golden Knights" = "VGK",
@@ -274,7 +278,7 @@ ui <- dashboardPage(skin = 'black',
                                   "Overtime Goals" = "otg",
                                   "Shots" = "shots",
                                   "Shot %" = "shot_perc",
-                                  "Time on Ice per Game Played" = "toi_gp",
+                                  "Time on Ice" = "toi_gp",
                                   "Shifts per Game Played" = "shifts_gp",
                                   "Faceoff Win %" = "fow_perc"), selected = "points"
           ),
@@ -458,8 +462,8 @@ ui <- dashboardPage(skin = 'black',
                   h5("There are 19 defunct and relocated NHL teams. Some relocated teams
                      include the Hartford Whalers and the Quebec Nordiques, which became 
                      the Carolina Hurricanes and Colorado Avalanche, respectively. Some 
-                     teams like the Philadelphia Quakers, St. Louis Eagles, and the Montreal 
-                     Maroons became defunct due to the Great Depression."),
+                     teams like the Philadelphia Quakers, St. Louis Eagles, and 
+                     the Montreal Maroons became defunct due to the Great Depression."),
                   
           # Allow the user to select a past NHL team
           
@@ -509,7 +513,8 @@ ui <- dashboardPage(skin = 'black',
           # Warn the user that blank graphs mean these teams were too old to be
           # tracking certain statistics
           
-          h5("Warning: If the plot is blank that means there was no data available for that particular statistic or team!"),
+          h5("Warning: If the plot is blank that means there was no data
+             available for that particular statistic or team!"),
           
           # attach the plot of season vs statistic
           
@@ -518,9 +523,10 @@ ui <- dashboardPage(skin = 'black',
           # add a description of the plot and what the colors mean
           
           h3("Description"),
-          p("This plot shows the relationship between the selected defunct teams' statistic over
-            the history of their particular franchise. Unlike the team stats plot, we only see
-            one team at a time since these defunct teams were not around at the same times.")),
+          p("This plot shows the relationship between the selected defunct
+          teams' statistic over the history of their particular franchise. 
+          Unlike the team stats plot, we only see one team at a time since
+            these defunct teams were not around at the same times.")),
           
           # create the glossary page for those not familiar with ice hockey
           # I added this page after demo day when a lot of people were confused
@@ -531,50 +537,60 @@ ui <- dashboardPage(skin = 'black',
                   h1("Glossary"),
                   h6("(From", tags$a("www.NHL.com", href = "http://www.nhl.com/stats/glossary"), ")"),
                   h4("Assists"),
-                  p("Assists can be awarded to a maximum of two players touching the puck before the 
-                    goal scorer, provided the opposing team has not controlled the puck between the 
-                    potential assists and the goal being scored. Unless otherwise specified, assist 
-                    totals are for all situations (even strength, power play, shorthanded) combined. 
-                    The last teammate to touch the puck before the goal scorer gets is awarded a primary 
-                    assist. The preceding teammate to touch the puck before the first assisting player 
-                    is awarded a secondary assist. Goals scored without teammates passing or otherwise 
-                    touching the puck before it gets to the goal scorer are said to be “unassisted” and 
-                    no assists are awarded."),
+                  p("Assists can be awarded to a maximum of two players touching
+                  the puck before the goal scorer, provided the opposing team has
+                  not controlled the puck between the potential assists and the
+                  goal being scored. Unless otherwise specified, assist totals
+                  are for all situations (even strength, power play, shorthanded)
+                  combined. The last teammate to touch the puck before the goal
+                  scorer gets is awarded a primary assist. The preceding teammate
+                  to touch the puck before the first assisting player is awarded
+                  a secondary assist. Goals scored without teammates passing or
+                  otherwise touching the puck before it gets to the goal scorer
+                  are said to be “unassisted” and no assists are awarded."),
                   h4("Faceoff Win Percentage"),
-                  p("After every whistle, a faceoff is taken between two players on opposing teams. 
-                    Faceoff Win Percentage is the percentage of times a particular team or player won
-                    the faceoff for their team."),
+                  p("After every whistle, a faceoff is taken between two players
+                  on opposing teams. Faceoff Win Percentage is the percentage of
+                  times a particular team or player won the faceoff for their
+                  team."),
                   h4("Goals"),
-                  p("The last player to touch the puck before it fully crosses the opponent’s goal line
-                    is awarded a goal scored. In rare cases where an opposing team’s skater directs the
-                    puck into his own goal, the closest player on the scoring team is awarded the goal. 
-                    Unless specified, goal totals are for all situations (even strength, power play, 
-                    shorthanded) combined."),
+                  p("The last player to touch the puck before it fully crosses
+                  the opponent’s goal line is awarded a goal scored. In rare
+                  cases where an opposing team’s skater directs the puck into
+                  his own goal, the closest player on the scoring team is awarded
+                  the goal. Unless specified, goal totals are for all situations 
+                  (even strength, power play, shorthanded) combined."),
                   h4("Penalty Minutes"),
-                  p("Penalty minutes are a total of all penalty minutes, whether those penalties caused
-                    an opposition power play or not."),
+                  p("Penalty minutes are a total of all penalty minutes, whether
+                  those penalties caused an opposition power play or not."),
                   h4("Plus-Minus"),
-                  p("Plus-minus is a team’s goal differential while a particular player is on the ice, 
-                    excluding the power play but including empty net situations. All the skaters on the
-                    ice receive a plus or minus when an even strength goal or shorthanded goal is scored
-                    depending on which team scored; plus-minus is not tracked for goalies. However, 
-                    plus-minus is heavily influenced by the strength of a player’s teammates and 
-                    goaltending, as well as small sample variances"),
+                  p("Plus-minus is a team’s goal differential while a particular
+                  player is on the ice, excluding the power play but including
+                  empty net situations. All the skaters on the ice receive a 
+                  plus or minus when an even strength goal or shorthanded goal 
+                  is scored depending on which team scored; plus-minus is not
+                  tracked for goalies. However, plus-minus is heavily influenced
+                  by the strength of a player’s teammates and goaltending, as
+                  well as small sample variances"),
                   h4("Points per Game Played"),
-                  p("In comparing the point production of different players, point totals can be divided
-                    by games played e.g. to account for players who have missed games due to injury or 
-                    who have not spent the entire season in the NHL."),
+                  p("In comparing the point production of different players, 
+                  point totals can be divided by games played e.g. to account
+                  for players who have missed games due to injury or who have
+                  not spent the entire season in the NHL."),
                   h4("Shooting Percentage"),
-                  p("The percentage of shots on goal (by a team or player) that go in the net, or S% = G/S.
-                    Shooting percentage does not take missed shots or blocked shots into consideration, 
-                    only shots that were saved by the goalie or scored a goal."),
+                  p("The percentage of shots on goal (by a team or player) that
+                  go in the net, or S% = G/S.Shooting percentage does not take
+                  missed shots or blocked shots into consideration, only shots
+                  that were saved by the goalie or scored a goal."),
                   h4("Shots"),
-                  p("Shots are the number of shots on goal taken by a player or team. Attempts blocked and
-                    missed shots are not included. Shots are also called shots on goal, or SOG."),
+                  p("Shots are the number of shots on goal taken by a player or
+                  team. Attempts blocked and missed shots are not included.
+                  Shots are also called shots on goal, or SOG."),
                   h4("Time on Ice per Game Played, TOI/GP"),
-                  p("Time On Ice is a player’s playing time in all situations (even strength, power play, 
-                    shorthanded). Consequently, TOI = EVTOI + PPTOI + SHTOI. See “Even strength time on 
-                    ice”, “Power play time on ice”, and “Shorthanded time on ice”."))
+                  p("Time On Ice is a player’s playing time in all situations 
+                  (even strength, power play, shorthanded). Consequently, TOI
+                  = EVTOI + PPTOI + SHTOI. See “Even strength time on ice”, 
+                  “Power play time on ice”, and “Shorthanded time on ice”."))
                   
         )
       )
