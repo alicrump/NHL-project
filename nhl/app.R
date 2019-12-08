@@ -110,136 +110,68 @@ ui <- dashboardPage(skin = 'black',
           
           tabItem(tabName = "teams",
                   h1("Team Stats"),
-                  h5("Select which statistic and season you'd like to look at!"),
-                  
-          # Add a drop down bar for which statistic the user wants to view
-          
-                  selectInput("y",
-                              "Statistic:",
-                              choices = c("Goals For" = "goals_for",
-                                          "Goals Against" = "goals_against",
-                                          "Face-Off Win %" = "fow_perc",
-                                          "Shots For" = "shots_per_gp",
-                                          "Shots Against" = "shots_against_per_gp",
-                                          "Powerplay %" = "powerplay_perc",
-                                          "Penalty Kill %" = "penalty_kill_perc")),
+                  h5("Select which team and statistic you'd like to look at!"),
             
           # Add a slider that allows the user to select a season start and end
           # Right now the years have commas in them -- still trying to figure
           # out how to fix that.
+  
           
-                  selectInput("season1", 
-                              "Season:",
-                              choices = c(
-                                "1917-1918" = "1917-18",
-                                "1918-1919" = "1918-19",
-                                "1919-1920" = "1919-20",
-                                "1920-1921" = "1920-21",
-                                "1921-1922" = "1921-22",
-                                "1922-1923" = "1922-23",
-                                "1923-1924" = "1923-24",
-                                "1924-1925" = "1924-25",
-                                "1925-1926" = "1925-26",
-                                "1926-1927" = "1926-27",
-                                "1927-1928" = "1927-28",
-                                "1928-1929" = "1928-29",
-                                "1929-1930" = "1929-30",
-                                "1930-1931" = "1930-31",
-                                "1931-1932" = "1931-32",
-                                "1932-1933" = "1932-33",
-                                "1933-1934" = "1933-34",
-                                "1934-1935" = "1934-35",
-                                "1935-1936" = "1935-36",
-                                "1936-1937" = "1936-37",
-                                "1937-1938" = "1937-38",
-                                "1938-1939" = "1938-39",
-                                "1939-1940" = "1939-40",
-                                "1940-1941" = "1940-41",
-                                "1941-1942" = "1941-42",
-                                "1942-1943" = "1942-43",
-                                "1943-1944" = "1943-44",
-                                "1944-1945" = "1944-45",
-                                "1945-1946" = "1945-46",
-                                "1946-1947" = "1946-47",
-                                "1947-1948" = "1947-48",
-                                "1948-1949" = "1948-49",
-                                "1949-1950" = "1949-50",
-                                "1950-1951" = "1950-51",
-                                "1951-1952" = "1951-52",
-                                "1952-1953" = "1952-53",
-                                "1953-1954" = "1953-54",
-                                "1954-1955" = "1954-55",
-                                "1955-1956" = "1955-56",
-                                "1956-1957" = "1956-57",
-                                "1957-1958" = "1957-58",
-                                "1958-1959" = "1958-59",
-                                "1959-1960" = "1959-60",
-                                "1960-1961" = "1960-61",
-                                "1961-1962" = "1961-62",
-                                "1962-1963" = "1962-63",
-                                "1963-1964" = "1963-64",
-                                "1964-1965" = "1964-65",
-                                "1965-1966" = "1965-66",
-                                "1966-1967" = "1966-67",
-                                "1967-1968" = "1967-68",
-                                "1968-1969" = "1968-69",
-                                "1969-1970" = "1969-70",
-                                "1970-1971" = "1970-71",
-                                "1971-1972" = "1971-72",
-                                "1972-1973" = "1972-73",
-                                "1973-1974" = "1973-74",
-                                "1974-1975" = "1974-75",
-                                "1975-1976" = "1975-76",
-                                "1976-1977" = "1976-77",
-                                "1977-1978" = "1977-78",
-                                "1978-1979" = "1978-79",
-                                "1979-1980" = "1979-80",
-                                "1980-1981" = "1980-81",
-                                "1981-1982" = "1981-82",
-                                "1982-1983" = "1982-83",
-                                "1983-1984" = "1983-84",
-                                "1984-1985" = "1984-85",
-                                "1985-1986" = "1985-86",
-                                "1986-1987" = "1986-87",
-                                "1987-1988" = "1987-88",
-                                "1988-1989" = "1988-89",
-                                "1989-1990" = "1989-90",
-                                "1990-1991" = "1990-91",
-                                "1991-1992" = "1991-92",
-                                "1992-1993" = "1992-93",
-                                "1993-1994" = "1993-94",
-                                "1994-1995" = "1994-95",
-                                "1995-1996" = "1995-96",
-                                "1996-1997" = "1996-97",
-                                "1997-1998" = "1997-98",
-                                "1998-1999" = "1998-99",
-                                "1999-2000" = "1999-00",
-                                "2000-2001" = "2000-01",
-                                "2001-2002" = "2001-02",
-                                "2002-2003" = "2002-03",
-                                "2003-2004" = "2003-04",
-            
-                                "2005-2006" = "2005-06",
-                                "2006-2007" = "2006-07",
-                                "2007-2008" = "2007-08",
-                                "2008-2009" = "2008-09",
-                                "2009-2010" = "2009-10",
-                                "2010-2011" = "2010-11",
-                                "2011-2012" = "2011-12",
-                                "2012-2013" = "2012-13",
-                                "2013-2014" = "2013-14",
-                                "2014-2015" = "2014-15",
-                                "2015-2016" = "2015-16",
-                                "2016-2017" = "2016-17",
-                                "2017-2018" = "2017-18",
-                                "2018-2019" = "2018-19",
-                                "2019-2020" = "2019-20"
-                              ), selected = "2018-19"),
+          selectInput("favorite_team", 
+                                 "Your Favorite Team:",
+                      choices = c("Anaheim Ducks",
+                                  "Arizona Coyotes",
+                                  "Boston Bruins",
+                                  "Buffalo Sabres",
+                                  "Carolina Hurricanes",
+                                  "Columbus Blue Jackets",
+                                  "Calgary Flames",
+                                  "Chicago Blackhawks",
+                                  "Colorado Avalanche",
+                                  "Dallas Stars",
+                                  "Detroit Red Wings",
+                                  "Edmonton Oilers",
+                                  "Florida Panthers",
+                                  "Los Angeles Kings",
+                                  "Minnesota Wild",
+                                  "Montréal Canadiens",
+                                  "New Jersey Devils",
+                                  "Nashville Predators",
+                                  "New York Islanders",
+                                  "New York Rangers",
+                                  "Ottawa Senators",
+                                  "Philadelphia Flyers",
+                                  "Pittsburgh Penguins",
+                                  "San Jose Sharks",
+                                  "St. Louis Blues",
+                                  "Tampa Bay Lightening",
+                                  "Toronto Maple Leafs",
+                                  "Vancouver Canucks",
+                                  "Vegas Golden Knights",
+                                  "Winnipeg Jets",
+                                  "Washington Capitals"
+                      )),
+          
+          # Add a drop down bar for which statistic the user wants to view
+          
+          selectInput("y",
+                      "Statistic:",
+                      choices = c("Points" = "points",
+                                  "Wins" = "wins",
+                                  "Losses" = "losses",
+                                  "Goals For" = "goals_for",
+                                  "Goals Against" = "goals_against",
+                                  "Face-Off Win %" = "fow_perc",
+                                  "Shots For" = "shots_per_gp",
+                                  "Shots Against" = "shots_against_per_gp",
+                                  "Powerplay %" = "powerplay_perc",
+                                  "Penalty Kill %" = "penalty_kill_perc")),
           
           # Plot my graph of the statistic vs. team
           
                   plotOutput("TeamPlot"),
-          tabItem(tabName = "player_description",
+          
+          tabItem(tabName = "team_description",
                   h3("Description"),
                   p("Teams are colored based on the number of points they
                     scored that season. The lighter colors of blue are the 
@@ -257,7 +189,7 @@ ui <- dashboardPage(skin = 'black',
           tabItem(tabName = "players",
                   h1("Player Data"),
                   h5("Select your favorite NHL team and a statistic
-                     and season you'd like to visualize!"),
+                     you'd like to visualize!"),
                   
             
           # Allow user to select a team to view player stats for
@@ -282,9 +214,9 @@ ui <- dashboardPage(skin = 'black',
                                           "Detroit Red Wings" = "DET",
                                           "Edmonton Oilers" = "EDM",
                                           "Florida Panthers" = "FLA",
-                                          "Los Angelos Kings" = "LAK",
+                                          "Los Angeles Kings" = "LAK",
                                           "Minnesota Wild" = "MIN",
-                                          "Montreal Canadiens" = "MTL",
+                                          "Montréal Canadiens" = "MTL",
                                           "New Jersey Devils" = "NJD",
                                           "Nashville Predators" = "NSH",
                                           "New York Islanders" = "NYI",
@@ -492,7 +424,6 @@ ui <- dashboardPage(skin = 'black',
                   selectInput("defunct_team",
                               "Past NHL Team:",
                               choices = c("Toronto Arenas",
-                                          "Montreal Canadiens",
                                           "Ottawa Senators (1917)",
                                           "Montreal Wanderers",
                                           "Toronto St. Patricks",
@@ -600,10 +531,12 @@ server <- function(input, output) {
       # Filter for the season the user inputs. Group by the team and sum
       # the selected statistic for each team. 
       
-      filter(season == input$season1) %>% 
-      group_by(team) %>% 
-      mutate(sum = sum(!! rlang:: sym(input$y))) %>% 
-      arrange(desc(points))
+      filter(team == input$favorite_team, season != "2019-20") %>% 
+      # group_by(team) %>% 
+      mutate(stat1 = !! rlang:: sym(input$y)) %>% 
+      filter(stat1 != is.na(stat1)) %>% 
+      select(team, season, stat1, color, points)
+      # arrange(desc(points))
   })
   playerreact <- reactive({
     players %>%
@@ -639,26 +572,29 @@ server <- function(input, output) {
   
     output$TeamPlot <- renderPlot({
         teamreact() %>% 
-        ggplot(aes(x = reorder(team, -sum), y = sum, fill = points)) +
+        ggplot(aes(x = season, y = stat1, fill = points)) +
         geom_col() +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-        xlab("Team") +
+        theme_bw() +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+        xlab("Season") +
         ylab("Statistic") +
-        theme(legend.position = "none") +
-        geom_text(aes(label = sum), color = "white", nudge_y = -5) +
-        theme(axis.text.x = element_text(angle = 45))
+        geom_text(aes(label = stat1), color = "white", nudge_y = -3)
+        
+        
+        
     })
     
     output$PlayerPlot <- renderPlot({
       playerreact() %>%
         ggplot(aes(x = reorder(name, -total), y = total, fill = points)) +
         geom_col() +
+        theme_bw() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         xlab("Player") +
         ylab("Statistic") +
         theme(legend.position = "none") +
-        theme(axis.text.x = element_text(angle = 45))+
-        geom_text(aes(label = total), color = "white", nudge_y = -1)
+        theme(axis.text.x = element_text(angle = 0))+
+        geom_text(aes(label = total), color = "white", nudge_y = -1) 
       
     })
     
@@ -680,7 +616,8 @@ server <- function(input, output) {
         geom_smooth(data=modeldata, 
                     aes(x = stat, y = points),
                     method = "lm", se = FALSE) +
-        geom_vline(data=highlight, aes(xintercept = stat, color = "chocolate1")) +
+        theme_bw() +
+        geom_vline(data=highlight, aes(xintercept = stat), color = "chocolate1") +
         labs(x = "Statistic", y = "Points") +
         theme(legend.position = "none")
         
@@ -691,6 +628,7 @@ server <- function(input, output) {
         defunctreact() %>% 
           ggplot(aes(x = season, y = statistic)) +
           geom_col() +
+          theme_bw() +
           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
           labs(x = "Season", y = "Statistic")
       })
