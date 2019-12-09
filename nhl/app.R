@@ -417,7 +417,7 @@ ui <- dashboardPage(skin = 'black',
           # Create the page for the models
           
           tabItem(tabName = "model",
-                  h1("2019-2020 Season Predictions for Philadelphia Flyers"),
+                  h2("Are the Philadelphia Flyers Doing Well This 2019 - 2020 Season?"),
             
           # Allow the user to select a stat to look at
                   
