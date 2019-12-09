@@ -1,5 +1,5 @@
 ---
-title: "Final project"
+title: "Visualizing NHL Statistics"
 author: "Ali Crump"
 date: "10/4/2019"
 output: html_document
@@ -138,8 +138,8 @@ players <- rbind(eight,seven,six,five,four,three,two,one) %>%
 
 
 ```{r, move data to shiny folder}
-# I'm moving my player and team data to the shiny app folder so that shiny
-# can "see" it.
+# I'm moving my player and team data to the shiny app folder and my pdf write
+# up folder so that these files can "see" my data.
 
 write_rds(teams, "nhl/teams.rds")
 write_rds(players, "nhl/players.rds")

@@ -65,7 +65,7 @@ ui <- dashboardPage(skin = 'black',
                            text-center",    
                   h4("Founded in 1917, the National Hockey League (NHL) is a
                      professional ice hockey league in North America."),
-                  h4("In the NHL, there are currently teams based in the United
+                  h4("In the NHL, there are currently 24 teams based in the United
                      States and 7 based in Canada."),
                   p("Select any team icon to view the team name and location of
                     the team's stadium!")),
@@ -80,9 +80,9 @@ ui <- dashboardPage(skin = 'black',
                   h3("Content"),
                   p("Thank you for viewing my project! You can navigate the
                     side bar to view team stastistics for current and defunct
-                    NHL teams, player statistics, and predictions for the
+                    NHL teams, player statistics, and statistics for the
                     Philadelphia Flyers' 2019-20 season. The statistics range
-                    from more typical ice hockey statistics such as goals, 
+                    from typical ice hockey statistics such as goals, 
                     assists, and points to more unique statistics like
                     penalty-kill percentage, faceoff win percentage, and 
                     game-winning goals."),
@@ -120,7 +120,9 @@ ui <- dashboardPage(skin = 'black',
                     team is trying to get an advantage over the others in any
                     way that they can, and turning to analytics can allow you
                     to view your team's habits and tendencies in a new and 
-                    potentially illuminating way."),
+                    potentially illuminating way. Coaches and players can
+                    improve their team and individual performance just by 
+                    looking at their habits in different ways."),
                   br(),
                   p("I decided to choose NHL data for my project because I've
                   always been fascinated by ice hockey. I grew up watching my
@@ -201,15 +203,17 @@ ui <- dashboardPage(skin = 'black',
           
           tabItem(tabName = "team_description",
                   h3("Description"),
-                  p("Teams are colored based on the number of points they
-                    scored that season. The lighter colors of blue are the 
-                    teams which finished the season with the most points, 
+                  p("The graph above shows your favorite team's performance
+                    on the statistic you chose over that programs's history. 
+                    Columns are colored based on the number of points the team
+                    scored that season, with a lot of points meaning that the
+                    team had a winning record, and a few points meaning that
+                    the team had a poor record. The lighter colors of blue are
+                    the teams which finished the season with the most points, 
                     and the darker colors of blue are the teams who finished 
-                    the season with the least points. The teams are arranged
-                    in descending order of how they performed on the selected
-                    statistic in the selected season. (The top team in points
-                    (lightest color) is
-                    not necessarily the the team who won the Stanley Cup).")
+                    the season with the least points. Each column is labeled
+                    with the team's performance on that statistic for each 
+                    season.")
                   )
           ),
           
@@ -218,9 +222,8 @@ ui <- dashboardPage(skin = 'black',
           tabItem(tabName = "players",
                   h1("Player Data"),
                   h5("Select your favorite NHL team and a statistic
-                     you'd like to visualize!"),
-                  
-            
+                     you'd like to visualize for any season!"),
+
           # Allow user to select a team to view player stats for
                   
           selectInput("team1",
@@ -406,18 +409,22 @@ ui <- dashboardPage(skin = 'black',
           tabItem(tabName = "player_description",
                   h1("Description"),
                   p("Players are colored based on the number of points they
-                    scored that season. The lighter colors of blue are the 
-                    players who finished the season with the most points, 
+                    scored that season. Players receive points from scoring 
+                    goals and assisting goals. The lighter colors of blue are
+                    the players who finished the season with the most points, 
                     and the darker colors of blue are the players who finished 
-                    the season with the least points. The teams are arranged
-                    in descending order of how they performed on the selected
-                    statistic in the selected season."))
+                    the season with the least points. The graph shows the 
+                    15 players who performed the best on the chosen statistic.")
+                  )
           ),
           
           # Create the page for the models
           
           tabItem(tabName = "model",
-                  h2("Are the Philadelphia Flyers Doing Well This 2019 - 2020 Season?"),
+                  h2("How are the Philadelphia Flyers Doing This 2019 - 2020 Season?"),
+                  h5("The Flyers are my favorite team, so let's see how they're doing so
+                     far this season, compared to all NHL teams since 1971! The Flyers
+                     performance this season is shown in orange."),
             
           # Allow the user to select a stat to look at
                   
@@ -443,15 +450,29 @@ ui <- dashboardPage(skin = 'black',
           # add a description of what the model is 
           
           h3("Description"),
-          p("Above is a linear model which displays the relationship between the 
-            selected statistic and the number of points an NHL team has. If the
-            slope of our regression line is positive, we say that the statistic and 
-            points are positively correlated. If the slope is negative, we say that
-            the statistic and points are negatively correlated."),
-          br(),
-          p("If the data points are closely clustered around our regression line,
+          p("The scatterplot above displays the relationship between the 
+            selected statistic and the number of points an NHL team has. I fitted
+            a linear model to the plot to see how well it might model our prediction
+            of a team's points if we know their performance on a particular statistic.
+            
+            If the data points are closely clustered around our regression line,
             we might say that our model is a good predictor of an NHL team's points
-            for a particular statistic.")
+            for a particular statistic. However, the linear model does not appear to
+            fit the data too well, as the data points are not that close the blue
+            prediction line. This result is likely because we are limited to averages
+            and percentages, since the Flyers have only played a portion of the
+            season. It would not make sense, for example, to plot the goals they
+            have scored this season and the number of points since they have played
+            such few games, although goals would be a great variable to try
+            predict the number of points a team has."),
+          br(),
+           p("While the models might not be particularly helpful or accurate in
+             predicting the number of points the Flyers will finish the season with,
+             they still allow us to see that the Flyers are doing outstandingly well
+             in their shots per game played, their faceoff win percentage, and their
+             powerplay percentage. For the other statistics, the Flyers are performing
+             about avergae compared to teams in years past."),
+          
           ),
           
           # Create the page for the past NHL teams
@@ -513,8 +534,11 @@ ui <- dashboardPage(skin = 'black',
           # Warn the user that blank graphs mean these teams were too old to be
           # tracking certain statistics
           
-          h5("Warning: If the plot is blank that means there was no data
-             available for that particular statistic or team!"),
+          h5("WARNING: If the plot is blank that means there was no data
+             available for that particular statistic or team! As a guideline,
+             most teams back then recorded points, goals for, and goals against. If you're 
+             interested in Faceoff win %, check out the Atlanta
+             Thrashers or the Phoenix Coyotes!"),
           
           # attach the plot of season vs statistic
           
@@ -523,11 +547,24 @@ ui <- dashboardPage(skin = 'black',
           # add a description of the plot and what the colors mean
           
           h3("Description"),
-          p("This plot shows the relationship between the selected defunct
-          teams' statistic over the history of their particular franchise. 
-          Unlike the team stats plot, we only see one team at a time since
-            these defunct teams were not around at the same times.")),
-          
+          p("The graph above shows the defunct team's performance
+            on the statistic you chose over that programs's history. 
+            Like the current NHL team page, columns are colored based on the
+            number of points the team scored that season, with a lot of 
+            points meaning that the team had a winning record, and a few
+            points meaning that the team had a poor record. The lighter colors
+            of blue are the teams which finished the season with the most
+            points, and the darker colors of blue are the teams who finished 
+            the season with the least points. Each column is labeled
+            with the team's performance on that statistic for each 
+            season. Because most of these defunct teams were some of the very
+            first NHL teams to exist, many of the teams only played for a few
+            seasons. The NHL also did not track the same statistics back then
+            as they do today, so some of the older teams might have no data
+            available for a chosen statistic. Generally speaking, though, each
+            team should have point, goals for, and goals against data to
+            visualize.")),
+
           # create the glossary page for those not familiar with ice hockey
           # I added this page after demo day when a lot of people were confused
           # by the ice hockey statistics they were seeing
@@ -653,7 +690,8 @@ server <- function(input, output) {
   defunctreact <- reactive({
     teams %>% 
     filter(team == input$defunct_team) %>% 
-    mutate(statistic = (!! rlang:: sym(input$statistic)))
+    mutate(statistic = (!! rlang:: sym(input$statistic))) %>% 
+    filter(statistic != is.na(statistic))
     
   })
   
@@ -685,7 +723,7 @@ server <- function(input, output) {
         theme_bw() +
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         labs(x = "Player", y = "Statistic", fill = "Points") +
-        theme(axis.text.x = element_text(angle = 45))+
+        theme(axis.text.x = element_text(angle = 20))+
         geom_text(aes(label = total), color = "white", nudge_y = -1)
       
     })
@@ -715,7 +753,7 @@ server <- function(input, output) {
         modelreact() %>% 
         filter(season != "2019-20", games_played >= 78)
       ggplot() +
-        geom_point(data=modeldata, aes(x = stat, y = points)) +
+        geom_point(data=modeldata, aes(x = stat, y = points), alpha = 0.6) +
         geom_smooth(data=modeldata, 
                     aes(x = stat, y = points),
                     method = "lm", se = FALSE) +
@@ -739,7 +777,7 @@ server <- function(input, output) {
           theme_bw() +
           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
           labs(x = "Season", y = "Statistic", fill = "Points") +
-          geom_text(aes(label = statistic), color = "white", nudge_y = -2)
+          geom_text(aes(label = statistic), color = "white", nudge_y = -6)
       })
     
 }
