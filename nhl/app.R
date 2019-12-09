@@ -27,6 +27,10 @@ players <- read_rds("players.rds")
 arenas<- read_rds("arenas.rds")
 
 # I mostly used Seeam Noor's project and Allie Russell's project as templates
+# I tried to title my project something more interesting than "project" but 
+# I made the repository back for the first few milestones and when I tried to
+# change it to "NHL_project" I couldn't open any of my files. 
+
 # Define UI for application
 # Use a black theme because that is the NHL's color in their logo
 
