@@ -144,9 +144,6 @@ players <- rbind(eight,seven,six,five,four,three,two,one) %>%
 write_rds(teams, "nhl/teams.rds")
 write_rds(players, "nhl/players.rds")
 
-write_rds(teams, "Write_up/teams.rds")
-write_rds(players, "Write_up/players.rds")
-
 
 ```
 
