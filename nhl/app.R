@@ -19,6 +19,7 @@ library(tidyverse)
 library(shinydashboard)
 library(forcats)
 library(leaflet)
+library(vembedr)
 
 # Load in the cleaned data into Shiny folder
 
@@ -136,7 +137,10 @@ ui <- dashboardPage(skin = 'black',
                   br(),
                   p("You can find my source code", tags$a("here", 
                   href = "https://github.com/alicrump/project")," 
-                    and contact me at alisoncrump@college.harvard.edu.")
+                    and contact me at alisoncrump@college.harvard.edu."),
+                  br(),
+                  p("Here is a video about my project!"),
+                  embed_url("https://www.youtube.com/watch?v=-qrqbdjtAxk")
     
           ),
           
@@ -277,12 +281,7 @@ ui <- dashboardPage(skin = 'black',
                                   "Points" = "points",
                                   "Plus-Minus" = "plus_minus",
                                   "Penalty Minutes" = "pim",
-                                  "Points per Game Played" = "points_per_gp",
                                   "Power Play Goals" = "ppg",
-                                  "Shorthanded Goals" = "shg",
-                                  "Shorthanded Points" = "shp",
-                                  "Game Winning Goals" = "gwg",
-                                  "Overtime Goals" = "otg",
                                   "Shots" = "shots",
                                   "Shot %" = "shot_perc",
                                   "Time on Ice" = "toi_gp",
@@ -396,12 +395,15 @@ ui <- dashboardPage(skin = 'black',
                         "2015-2016" = "2015-16",
                         "2016-2017" = "2016-17",
                         "2017-2018" = "2017-18",
-                        "2018-2019" = "2018-19",
-                        "2019-2020" = "2019-20"
+                        "2018-2019" = "2018-19"
                       ), selected = "2018-19"
           ),
           
           h5("(Displaying the top 15 for each statistic)"),
+          h5("WARNING: If the plot is blank that likely means
+            the team you have selected did not exist in that particular season
+            or there was no data available for that particular statistic in the
+            year chosen!"),
           
           
           # Plot the graph of my statistic vs. players for a certain team
@@ -425,9 +427,9 @@ ui <- dashboardPage(skin = 'black',
           # Create the page for the models
           
           tabItem(tabName = "model",
-                  h2("How are the Philadelphia Flyers Doing This 2019 - 2020 Season?"),
+                  h2("How are the Philadelphia Flyers Doing so Far in the 2019 - 2020 Season?"),
                   h5("The Flyers are my favorite team, so let's see how they're doing so
-                     far this season, compared to all NHL teams since 1971! The Flyers
+                     far this season compared to all NHL teams since 1971! The Flyers
                      performance this season is shown in orange."),
             
           # Allow the user to select a stat to look at
@@ -476,6 +478,14 @@ ui <- dashboardPage(skin = 'black',
              in their shots per game played, their faceoff win percentage, and their
              powerplay percentage. For the other statistics, the Flyers are performing
              about avergae compared to teams in years past."),
+          br(),
+          p("This scatterplot is showing team data from 1971. Currently, each team plays 
+            82 games per regular season. Before 1971, teams played 76 games or less.
+            Because teams played a significantly less number of games, the top teams
+            ended their seasons with less points than they do today. I did not want 
+            these affecting the linear model, so I arbitrarily chose 78 games as 'close
+            enough' to 82, since the Flyers will play 82 games this season. In the
+            future, I might explore different models for different years.")
           
           ),
           
@@ -576,7 +586,7 @@ ui <- dashboardPage(skin = 'black',
           
           tabItem(tabName = "glossary",
                   h1("Glossary"),
-                  h6("(From", tags$a("www.NHL.com", href = "http://www.nhl.com/stats/glossary"), ")"),
+                  br(),
                   h4("Assists"),
                   p("Assists can be awarded to a maximum of two players touching
                   the puck before the goal scorer, provided the opposing team has
@@ -631,7 +641,10 @@ ui <- dashboardPage(skin = 'black',
                   p("Time On Ice is a player’s playing time in all situations 
                   (even strength, power play, shorthanded). Consequently, TOI
                   = EVTOI + PPTOI + SHTOI. See “Even strength time on ice”, 
-                  “Power play time on ice”, and “Shorthanded time on ice”."))
+                  “Power play time on ice”, and “Shorthanded time on ice”."),
+                  br(),
+                  h6("(From", tags$a("www.NHL.com", href = "http://www.nhl.com/stats/glossary"), ")"),
+                  )
                   
         )
       )
@@ -728,7 +741,7 @@ server <- function(input, output) {
         theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         labs(x = "Player", y = "Statistic", fill = "Points") +
         theme(axis.text.x = element_text(angle = 20))+
-        geom_text(aes(label = total), color = "white", nudge_y = -1)
+        geom_text(aes(label = total), color = "white", nudge_y = -4)
       
     })
     
@@ -781,7 +794,7 @@ server <- function(input, output) {
           theme_bw() +
           theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
           labs(x = "Season", y = "Statistic", fill = "Points") +
-          geom_text(aes(label = statistic), color = "white", nudge_y = -6)
+          geom_text(aes(label = statistic), color = "white", nudge_y = -1.8) 
       })
     
 }
